@@ -65,10 +65,13 @@ Un servicio (interno o externo) dedicado a transformar grabaciones de audio en t
 Utilizamos el estándar Javadoc para la documentación de código, lo que permite generar automáticamente la documentación API del proyecto.
 Generación de Documentación: Para generar las páginas web Javadoc, se puede usar un IDE como jGRASP (File -> Generate Documentation) o el comando javadoc desde la línea de comandos de Maven (ver más abajo).
 Errores Javadoc: Los errores de Javadoc se mostrarán en la ventana de compilación o en la consola.
+
+
 2. Reglas Básicas de Codificación
 Nombres Descriptivos: Utilizar nombres descriptivos y apropiados para todos los identificadores (variables, métodos, clases, constantes, etc.).
 Comentarios Regulares: Se recomienda comentar cada 3-7 líneas de código para explicar lógica compleja.
 Claridad y Orden: Mantener el código ordenado y bien estructurado.
+
 3. Nomenclatura y Capitalización de Identificadores
 Descriptivos: Siempre usar nombres descriptivos.
 Identificadores de Una Letra: Solo permitidos para contadores en bucles (ej. i, j).
@@ -79,6 +82,7 @@ Nombres de Métodos: Inician con minúscula (camelCase). Ej: createUser, getLedg
 Identificadores Multi-Palabra: Se capitalizan internamente (camelCase/PascalCase) sin usar guiones medios ni guiones bajos (excepto para constantes).
 Ejemplo: float sumOfSquares = 0;
 Constante: final int DAYS_IN_YEAR = 365;
+
 4. Comentarios: Clases
 Toda clase debe ir precedida de un comentario descriptivo utilizando la convención Javadoc. El comentario debe describir el propósito de la clase.
 /**
@@ -87,6 +91,7 @@ Toda clase debe ir precedida de un comentario descriptivo utilizando la convenci
 class President {
    //code...
 }
+
 5. Comentarios: Métodos
 Cada definición de método debe ir precedida de un comentario descriptivo utilizando la convención Javadoc. Este debe incluir:
 Descripción del Método: Breve explicación de lo que hace el método.
@@ -119,6 +124,7 @@ public static int method1(String word, Integer number) throws MyException, YourE
   
   return 1; 
 }
+
 6. Comentarios: Variables Públicas
 Toda variable pública debe ir precedida de un comentario descriptivo utilizando la convención Javadoc, explicando su propósito.
 /** Toggles between frame and no frame mode. */
@@ -133,7 +139,8 @@ for (int i = 0; i < matrix.length; i++) {
     }
   }
 }
-8. Espaciado: Entre Líneas
+
+7. Espaciado: Entre Líneas
 Métodos: Usar dos líneas en blanco para separar cada método dentro de una definición de clase.
 Secciones Lógicas: Usar una línea en blanco para separar secciones lógicas de código dentro de un método.
 public static void main(String[] arg) {
