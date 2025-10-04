@@ -154,6 +154,23 @@ public static void main(String[] arg) {
 
 # Flujo de trabajo con GitFlow.
 
+Este proyecto utiliza el flujo de trabajo **GitFlow** para gestionar el código fuente. A continuación se describen las ramas principales:
+
+*   **`main`**: Esta rama contiene el código estable y listo para producción. Cada commit en `main` es una nueva versión.
+*   **`develop`**: Es la rama principal de desarrollo. Integra todas las funcionalidades terminadas que se incluirán en la próxima versión.
+
+### Ramas de Soporte
+
+*   **`feature/<nombre-feature>`**: Se crean a partir de `develop` para trabajar en nuevas funcionalidades. Al finalizar, se fusionan de nuevo en `develop`.
+    *   Ejemplo: `feature/autenticacion-jwt`
+*   **`release/<version>`**: Se crean desde `develop` cuando se prepara un nuevo lanzamiento. Permiten realizar pruebas finales y corregir errores menores. Una vez lista, la rama se fusiona en `main` y `develop`.
+    *   Ejemplo: `release/v1.2.0`
+*   **`hotfix/<version>`**: Se crean a partir de `main` para solucionar errores críticos en producción. Una vez resuelto el problema, se fusionan tanto en `main` como en `develop`.
+    *   Ejemplo: `hotfix/v1.1.1`
+    *   
+<img width="1168" height="507" alt="image" src="https://github.com/user-attachments/assets/07f10d7f-2578-4e29-a6d7-87621caf30a3" />
+
+
 # Instrucciones de ejecución
 
 1. Asegúrate de tener Java 21+ y Maven instalados en tu sistema.
