@@ -154,7 +154,7 @@ public static void main(String[] arg) {
 
 # Flujo de trabajo con GitFlow.
 
-## Instrucciones de ejecución
+# Instrucciones de ejecución
 
 1. Asegúrate de tener Java 21+ y Maven instalados en tu sistema.
 2. Abre una terminal en la carpeta `core`.
