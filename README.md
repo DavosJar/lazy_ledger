@@ -190,4 +190,10 @@ mvn spring-boot:run
 La aplicación se iniciará en el puerto configurado (por defecto 8090).
 
 ## Configuración
+<<<<<<< HEAD
 Puedes modificar la configuración en el archivo `src/main/resources/application.properties`.
+=======
+Puedes modificar la configuración en el archivo `src/main/resources/application.properties`.
+
+
+>>>>>>> origin/feature/construir_respuesta_api
