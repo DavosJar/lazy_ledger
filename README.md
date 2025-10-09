@@ -1,10 +1,9 @@
 # lazy_ledger
 
 
-
 # Requerimientos del Proyecto
 
-Para la recopilación detallada de requisitos para el desarrollo del backend, consulte [requirements.md](requirements.md).
+Para la recopilación detallada de requisitos para el desarrollo de la aplicacion, consulte [requirements.md](requirements.md).
 
 # Arquitectura seleccionada.
 
