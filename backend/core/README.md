@@ -12,17 +12,18 @@ Consulta la documentación de los endpoints de ledgers en [API_LEDGER.md](./API_
 2. Abre una terminal en la carpeta `core`.
 3. Ejecuta el siguiente comando para iniciar la aplicación:
 
-```
+```sh
 ./mvnw spring-boot:run
 ```
 
 O si tienes Maven instalado globalmente:
 
-```
+```sh
 mvn spring-boot:run
 ```
 
 La aplicación se iniciará en el puerto configurado (por defecto 8090).
 
 ## Configuración
+
 Puedes modificar la configuración en el archivo `src/main/resources/application.properties`.
