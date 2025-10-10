@@ -197,9 +197,9 @@ Esto también eliminará los volúmenes de datos de PostgreSQL.
 Para desarrollo local sin contenedores, actualiza `application.properties` para usar:
 
 ```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/lazyledger_db
-spring.datasource.username=admin
-spring.datasource.password=secret
+spring.datasource.url=jdbc:postgresql://localhost:5432/lazy_ledger_db
+spring.datasource.username=postgres
+spring.datasource.password=password
 server.port=8090
 ```
 
