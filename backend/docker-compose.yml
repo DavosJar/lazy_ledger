@@ -1,20 +1,31 @@
-version: '3.8'
+version: "3.9"
+
 services:
   db:
     image: postgres:17.3
+    container_name: lazyledger-db
     environment:
-      POSTGRES_DB: lazy_ledger
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: lazyledger_db
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-  app:
+      - db_data:/var/lib/postgresql/data
+
+  backend:
     build: .
+    container_name: lazyledger-backend
     ports:
-      - "8080:8080"
+      - "8090:8090"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/lazyledger_db
+      SPRING_DATASOURCE_USERNAME: admin
+      SPRING_DATASOURCE_PASSWORD: secret
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.PostgreSQLDialect
     depends_on:
       - db
+
 volumes:
-  postgres_data:
+  db_data:
