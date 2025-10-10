@@ -1,0 +1,40 @@
+services:
+  postgres:
+    image: postgres:17.3
+    container_name: lazy_ledger_postgres
+    environment:
+      POSTGRES_DB: lazy_ledger_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - lazy_ledger_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: lazy_ledger_app
+    ports:
+      - "8090:8090"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lazy_ledger_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: password
+    networks:
+      - lazy_ledger_network
+
+volumes:
+  postgres_data:
+
+networks:
+  lazy_ledger_network:
