@@ -8,6 +8,6 @@ public class LazyLedgerController {
 
     @GetMapping("/")
     public String hello() {
-        return "Hello from Lazy Ledger Backend!";
+        return "ada ";
     }
 }

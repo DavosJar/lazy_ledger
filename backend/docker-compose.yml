@@ -23,6 +23,9 @@ services:
     container_name: lazy_ledger_app
     ports:
       - "8090:8090"
+    volumes:
+      # Monta tu código fuente local en el directorio de trabajo del contenedor
+      - ./src:/app/src
     depends_on:
       postgres:
         condition: service_healthy
@@ -32,6 +35,7 @@ services:
       SPRING_DATASOURCE_PASSWORD: password
     networks:
       - lazy_ledger_network
+
 
 volumes:
   postgres_data:
