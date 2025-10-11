@@ -2,7 +2,7 @@ package com.lazyledger.backend.commons.identificadores;
 
 import java.util.UUID;
 
-public record ClienteId(UUID id) {
+public record ClienteId(UUID value) {
 
     public static ClienteId of(UUID id) {
         return new ClienteId(id);
@@ -10,6 +10,6 @@ public record ClienteId(UUID id) {
 
     @Override
     public String toString() {
-        return id.toString();
+        return value.toString();
     }
 }

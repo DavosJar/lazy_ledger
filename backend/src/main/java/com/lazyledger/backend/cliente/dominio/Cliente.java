@@ -1,45 +1,52 @@
 package com.lazyledger.backend.cliente.dominio;
 
-
 import com.lazyledger.backend.commons.identificadores.ClienteId;
-import com.lazyledger.backend.cliente.dominio.Email;
+
+import java.util.Objects;
+
+import com.lazyledger.backend.commons.enums.TipoCliente;
+
+
 
 public class Cliente {
     private final ClienteId id;
-    private final String nombre;
+    private final NombreCompleto nombreCompleto;
     private final Email email;
+    private final TipoCliente tipo;
+    private final Telefono telefono;
 
-    private Cliente(ClienteId id, String nombre, Email email) {
-        this.id = id;
-        this.nombre = nombre;
-        this.email = email;
-    }
-    public static Cliente create(ClienteId id, String nombre, Email email) {
-        return new Cliente(id, nombre, email);
-    }
-
-    public static Cliente rehydrate(ClienteId id, String nombre, Email email) {
-        return new Cliente(id, nombre, email);
+    private Cliente(ClienteId id, NombreCompleto nombreCompleto, Email email, TipoCliente tipo, Telefono telefono) {
+        this.id = Objects.requireNonNull(id, "El ID del cliente no puede ser nulo");
+        this.nombreCompleto = nombreCompleto;
+        this.email = Objects.requireNonNull(email, "El email del cliente no puede ser nulo");
+        this.tipo = tipo;
+        this.telefono = telefono;
     }
 
+    public static Cliente create(ClienteId id, NombreCompleto nombre, Email email, TipoCliente tipo, Telefono telefono) {
+        return new Cliente(id, nombre, email, tipo, telefono);
+    }
+
+    public static Cliente rehydrate(ClienteId id, NombreCompleto nombre, Email email, TipoCliente tipo, Telefono telefono) {
+        return new Cliente(id, nombre, email, tipo, telefono);
+    }
     public ClienteId getId() {
         return id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public NombreCompleto getNombreCompleto() {
+        return nombreCompleto;
     }
 
     public Email getEmail() {
         return email;
     }
 
-    public static void main(String[] args) {
-        ClienteId clienteId = ClienteId.of(java.util.UUID.randomUUID());
-        Email email = Email.of("ejemplo@dominio.com");
-        Cliente cliente = Cliente.create(clienteId, "Nombre Ejemplo", email);
-        System.out.println("Cliente ID: " + cliente.getId());
-        System.out.println("Nombre: " + cliente.getNombre());
-        System.out.println("Email: " + cliente.getEmail());
+    public TipoCliente getTipo() {
+        return tipo;
+    }
+
+    public Telefono getTelefono() {
+        return telefono;
     }
 }
