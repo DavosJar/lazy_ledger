@@ -5,6 +5,7 @@ import com.lazyledger.backend.cliente.dominio.Email;
 import com.lazyledger.backend.cliente.dominio.NombreCompleto;
 import com.lazyledger.backend.cliente.dominio.Telefono;
 import com.lazyledger.backend.cliente.dominio.repositorio.ClienteRepository;
+import com.lazyledger.backend.commons.exceptions.InfrastructureException;
 import com.lazyledger.backend.commons.identificadores.ClienteId;
 import org.springframework.stereotype.Repository;
 
@@ -23,29 +24,58 @@ public class JpaClienteRepositoryImpl implements ClienteRepository {
 
     @Override
     public Cliente save(Cliente cliente) {
-        ClienteEntity entity = toEntity(cliente);
-        ClienteEntity saved = jpaRepository.save(entity);
-        return toDomain(saved);
+        try {
+            ClienteEntity entity = toEntity(cliente);
+            ClienteEntity saved = jpaRepository.save(entity);
+            return toDomain(saved);
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al guardar el cliente en la base de datos", e);
+        }
     }
 
     @Override
     public Optional<Cliente> findById(UUID id) {
-        return jpaRepository.findById(id).map(this::toDomain);
+        try {
+            return jpaRepository.findById(id).map(this::toDomain);
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al buscar el cliente por ID en la base de datos", e);
+        }
     }
 
     @Override
     public List<Cliente> findAll() {
-        return jpaRepository.findAll().stream().map(this::toDomain).toList();
+        try {
+            return jpaRepository.findAll().stream().map(this::toDomain).toList();
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al obtener todos los clientes de la base de datos", e);
+        }
     }
 
     @Override
     public void delete(UUID id) {
-        jpaRepository.deleteById(id);
+        try {
+            jpaRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al eliminar el cliente de la base de datos", e);
+        }
     }
 
     @Override
     public boolean existsById(UUID id) {
-        return jpaRepository.existsById(id);
+        try {
+            return jpaRepository.existsById(id);
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al verificar existencia del cliente por ID", e);
+        }
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        try {
+            return jpaRepository.existsByEmail(email);
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al verificar existencia del cliente por email", e);
+        }
     }
 
     private ClienteEntity toEntity(Cliente cliente) {

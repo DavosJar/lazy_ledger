@@ -5,6 +5,7 @@ import com.lazyledger.backend.commons.identificadores.ClienteId;
 import java.util.Objects;
 
 import com.lazyledger.backend.commons.enums.TipoCliente;
+import com.lazyledger.backend.commons.exceptions.ValidationException;
 
 
 
@@ -16,9 +17,18 @@ public class Cliente {
     private final Telefono telefono;
 
     private Cliente(ClienteId id, NombreCompleto nombreCompleto, Email email, TipoCliente tipo, Telefono telefono) {
-        this.id = Objects.requireNonNull(id, "El ID del cliente no puede ser nulo");
+        if (id == null) {
+            throw new ValidationException("El ID del cliente no puede ser nulo");
+        }
+        if (nombreCompleto == null) {
+            throw new ValidationException("El nombre completo del cliente no puede ser nulo");
+        }
+        if (email == null) {
+            throw new ValidationException("El email del cliente no puede ser nulo");
+        }
+        this.id = id;
         this.nombreCompleto = nombreCompleto;
-        this.email = Objects.requireNonNull(email, "El email del cliente no puede ser nulo");
+        this.email = email;
         this.tipo = tipo;
         this.telefono = telefono;
     }

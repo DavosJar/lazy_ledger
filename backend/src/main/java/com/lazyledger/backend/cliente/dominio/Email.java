@@ -1,14 +1,16 @@
 package com.lazyledger.backend.cliente.dominio;
 
+import com.lazyledger.backend.commons.exceptions.ValidationException;
+
 public record Email(String email) {
 
     public Email {
         if (email == null || email.trim().isEmpty()) {
-            throw new IllegalArgumentException("El email no puede ser nulo o vacío");
+            throw new ValidationException("El email no puede ser nulo o vacío");
         }
         email = email.trim();
         if (!isValidEmail(email)) {
-            throw new IllegalArgumentException("El formato del email es inválido");
+            throw new ValidationException("El formato del email es inválido");
         }
     }
     public static Email of(String email) {

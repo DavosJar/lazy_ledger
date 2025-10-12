@@ -20,8 +20,8 @@ public class ClienteDataLoader implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         // Verificar si ya hay clientes
-        var clientes = clienteFacade.getAllClientes();
-        if (!clientes.isEmpty()) {
+        var clientesPage = clienteFacade.getAllClientes(0, 1000);
+        if (!clientesPage.getData().isEmpty()) {
             return; // Ya hay datos, no cargar
         }
 
