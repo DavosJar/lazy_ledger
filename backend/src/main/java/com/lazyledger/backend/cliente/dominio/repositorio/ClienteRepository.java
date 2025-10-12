@@ -12,5 +12,6 @@ public interface ClienteRepository {
     List<Cliente> findAll();
     void delete(UUID id);
     boolean existsById(UUID id);
+    boolean existsByEmail(String email);
 
 }

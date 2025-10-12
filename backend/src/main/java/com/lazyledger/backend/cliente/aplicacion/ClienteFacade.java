@@ -4,6 +4,7 @@ import com.lazyledger.backend.cliente.presentacion.dto.ClienteDTO;
 import com.lazyledger.backend.cliente.presentacion.dto.ClienteSaveRequest;
 import com.lazyledger.backend.cliente.presentacion.mapper.ClienteMapper;
 import com.lazyledger.backend.cliente.dominio.repositorio.ClienteRepository;
+import com.lazyledger.backend.commons.exceptions.ApplicationException;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
 import java.util.List;
@@ -21,24 +22,42 @@ public class ClienteFacade {
     }
 
     public ClienteDTO createCliente(ClienteSaveRequest clienteSaveRequest) {
-        var cliente = clienteMapper.toDomain(clienteSaveRequest);
-        var createdCliente = clienteUseCases.createCliente(cliente);
-        return clienteMapper.toDTO(createdCliente);
+        try {
+            var cliente = clienteMapper.toDomain(clienteSaveRequest);
+            var createdCliente = clienteUseCases.createCliente(cliente);
+            return clienteMapper.toDTO(createdCliente);
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("Datos inválidos en la solicitud de creación: " + e.getMessage(), e);
+        }
     }
 
     public ClienteDTO getClienteById(String id) {
-        var cliente = clienteUseCases.getClienteById(UUID.fromString(id));
-        return clienteMapper.toDTO(cliente);
+        try {
+            UUID uuid = UUID.fromString(id);
+            var cliente = clienteUseCases.getClienteById(uuid);
+            return clienteMapper.toDTO(cliente);
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("El ID proporcionado no es un UUID válido: " + id, e);
+        }
     }
 
     public void deleteCliente(String id) {
-        clienteUseCases.deleteCliente(UUID.fromString(id));
+        try {
+            UUID uuid = UUID.fromString(id);
+            clienteUseCases.deleteCliente(uuid);
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("El ID proporcionado no es un UUID válido: " + id, e);
+        }
     }
 
     public ClienteDTO updateCliente(ClienteDTO clienteDTO) {
-        var cliente = clienteMapper.toDomain(clienteDTO);
-        var updatedCliente = clienteUseCases.updateCliente(cliente);
-        return clienteMapper.toDTO(updatedCliente);
+        try {
+            var cliente = clienteMapper.toDomain(clienteDTO);
+            var updatedCliente = clienteUseCases.updateCliente(cliente);
+            return clienteMapper.toDTO(updatedCliente);
+        } catch (IllegalArgumentException e) {
+            throw new ApplicationException("Datos inválidos en la solicitud de actualización: " + e.getMessage(), e);
+        }
     }
 
     public List<ClienteDTO> getAllClientes() {
