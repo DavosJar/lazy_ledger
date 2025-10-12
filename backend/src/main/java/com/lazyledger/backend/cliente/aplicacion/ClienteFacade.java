@@ -6,6 +6,8 @@ import com.lazyledger.backend.cliente.presentacion.mapper.ClienteMapper;
 import com.lazyledger.backend.cliente.dominio.repositorio.ClienteRepository;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClienteFacade {
@@ -37,6 +39,13 @@ public class ClienteFacade {
         var cliente = clienteMapper.toDomain(clienteDTO);
         var updatedCliente = clienteUseCases.updateCliente(cliente);
         return clienteMapper.toDTO(updatedCliente);
+    }
+
+    public List<ClienteDTO> getAllClientes() {
+        var clientes = clienteUseCases.getAllClientes();
+        return clientes.stream()
+                .map(clienteMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
 }
