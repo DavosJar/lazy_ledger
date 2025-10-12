@@ -1,41 +1,44 @@
 package com.lazyledger.backend.cliente.aplicacion;
 
+import com.lazyledger.backend.api.ApiResponse;
 import com.lazyledger.backend.cliente.presentacion.dto.ClienteDTO;
 import com.lazyledger.backend.cliente.presentacion.dto.ClienteSaveRequest;
-import com.lazyledger.backend.cliente.presentacion.mapper.ClienteMapper;
+import com.lazyledger.backend.cliente.aplicacion.assembler.ClienteAssembler;
 import com.lazyledger.backend.cliente.dominio.repositorio.ClienteRepository;
 import com.lazyledger.backend.commons.exceptions.ApplicationException;
 import org.springframework.stereotype.Service;
 import java.util.UUID;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.lazyledger.backend.api.PagedResponse;
+import org.springframework.hateoas.Link;
 
 @Service
 public class ClienteFacade {
 
     private final ClienteUseCases clienteUseCases;
-    private final ClienteMapper clienteMapper;
+    private final ClienteAssembler clienteAssembler;
 
-    public ClienteFacade(ClienteRepository clienteRepository, ClienteMapper clienteMapper) {
+    public ClienteFacade(ClienteRepository clienteRepository, ClienteAssembler clienteAssembler) {
         this.clienteUseCases = new ClienteUseCases(clienteRepository);
-        this.clienteMapper = clienteMapper;
+        this.clienteAssembler = clienteAssembler;
     }
 
-    public ClienteDTO createCliente(ClienteSaveRequest clienteSaveRequest) {
+    public ApiResponse<ClienteDTO> createCliente(ClienteSaveRequest clienteSaveRequest) {
         try {
-            var cliente = clienteMapper.toDomain(clienteSaveRequest);
+            var cliente = clienteAssembler.toDomain(clienteSaveRequest);
             var createdCliente = clienteUseCases.createCliente(cliente);
-            return clienteMapper.toDTO(createdCliente);
+            var dto = clienteAssembler.toDTO(createdCliente);
+            return clienteAssembler.assemble(dto);
         } catch (IllegalArgumentException e) {
             throw new ApplicationException("Datos inválidos en la solicitud de creación: " + e.getMessage(), e);
         }
     }
 
-    public ClienteDTO getClienteById(String id) {
+    public ApiResponse<ClienteDTO> getClienteById(String id) {
         try {
             UUID uuid = UUID.fromString(id);
             var cliente = clienteUseCases.getClienteById(uuid);
-            return clienteMapper.toDTO(cliente);
+            var dto = clienteAssembler.toDTO(cliente);
+            return clienteAssembler.assemble(dto);
         } catch (IllegalArgumentException e) {
             throw new ApplicationException("El ID proporcionado no es un UUID válido: " + id, e);
         }
@@ -50,21 +53,29 @@ public class ClienteFacade {
         }
     }
 
-    public ClienteDTO updateCliente(ClienteDTO clienteDTO) {
+    public ApiResponse<ClienteDTO> updateCliente(ClienteDTO clienteDTO) {
         try {
-            var cliente = clienteMapper.toDomain(clienteDTO);
+            var cliente = clienteAssembler.toDomain(clienteDTO);
             var updatedCliente = clienteUseCases.updateCliente(cliente);
-            return clienteMapper.toDTO(updatedCliente);
+            var dto = clienteAssembler.toDTO(updatedCliente);
+            return clienteAssembler.assemble(dto);
         } catch (IllegalArgumentException e) {
             throw new ApplicationException("Datos inválidos en la solicitud de actualización: " + e.getMessage(), e);
         }
     }
 
-    public List<ClienteDTO> getAllClientes() {
-        var clientes = clienteUseCases.getAllClientes();
-        return clientes.stream()
-                .map(clienteMapper::toDTO)
-                .collect(Collectors.toList());
+    public com.lazyledger.backend.api.PagedResponse<ClienteDTO> getAllClientes(int page, int size) {
+        var allClientes = clienteUseCases.getAllClientes().stream()
+                .map(clienteAssembler::toDTO)
+                .collect(java.util.stream.Collectors.toList());
+        long totalElements = allClientes.size();
+        int totalPages = (int) Math.ceil((double) totalElements / size);
+        int start = page * size;
+        int end = Math.min(start + size, allClientes.size());
+        var pageClientes = allClientes.subList(start, end);
+
+        // For simplicity, return PagedResponse without links for now
+        return new PagedResponse<>(pageClientes, page, size, totalElements, totalPages, new Link[0]);
     }
 
 }
