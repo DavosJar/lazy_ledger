@@ -1,6 +1,7 @@
 package com.lazyledger.backend.cliente.aplicacion;
 
 import java.util.UUID;
+import java.util.List;
 
 import com.lazyledger.backend.cliente.dominio.Cliente;
 import com.lazyledger.backend.cliente.dominio.repositorio.ClienteRepository;
@@ -33,5 +34,9 @@ public class ClienteUseCases {
             throw new IllegalArgumentException("Cliente no encontrado con ID: " + cliente.getId());
         }
         return clienteRepository.save(cliente);
+    }
+
+    public List<Cliente> getAllClientes() {
+        return clienteRepository.findAll();
     }
 }

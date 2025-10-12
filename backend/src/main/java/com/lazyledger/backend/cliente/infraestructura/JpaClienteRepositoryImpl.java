@@ -5,7 +5,6 @@ import com.lazyledger.backend.cliente.dominio.Email;
 import com.lazyledger.backend.cliente.dominio.NombreCompleto;
 import com.lazyledger.backend.cliente.dominio.Telefono;
 import com.lazyledger.backend.cliente.dominio.repositorio.ClienteRepository;
-import com.lazyledger.backend.commons.enums.TipoCliente;
 import com.lazyledger.backend.commons.identificadores.ClienteId;
 import org.springframework.stereotype.Repository;
 
