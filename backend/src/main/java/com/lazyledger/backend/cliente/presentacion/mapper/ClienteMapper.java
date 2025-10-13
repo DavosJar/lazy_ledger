@@ -38,11 +38,16 @@ public class ClienteMapper {
                     dto.getTipo() != null ? TipoCliente.valueOf(dto.getTipo()) : null,
                     dto.getTelefono() != null ? Telefono.of(dto.getTelefono()) : null
             );
-        } catch (IllegalArgumentException e) {
+        } catch (ValidationException e) {
             throw new ValidationException("Datos inválidos en el DTO del cliente: " + e.getMessage(), e);
         }
     }
-
+    /**
+     * Convertir ClienteSaveRequest a Cliente (dominio)
+     * 
+     * @param request
+     * @return
+     */
     public Cliente toDomain(ClienteSaveRequest request) {
         try {
             return Cliente.create(
@@ -52,7 +57,7 @@ public class ClienteMapper {
                     request.getTipo() != null ? TipoCliente.valueOf(request.getTipo()) : null,
                     request.getTelefono() != null ? Telefono.of(request.getTelefono()) : null
             );
-        } catch (IllegalArgumentException e) {
+        } catch (ValidationException e) {
             throw new ValidationException("Datos inválidos en la solicitud de guardar cliente: " + e.getMessage(), e);
         }
     }
