@@ -2,24 +2,34 @@ package com.lazyledger.backend.deuda.dominio;
 
 import java.time.LocalDate;
 
+import com.lazyledger.backend.commons.enums.EstadoDeuda;
+import com.lazyledger.backend.commons.exceptions.ValidationException;
 import com.lazyledger.backend.commons.identificadores.DeudaId;
 
 public class Deuda {
     private final DeudaId id;
     private final String nombre;
-    private final Limite limite;
     private final Double montoTotal;
     private final String descripcion;
     private final FechasDeuda fechas;
-    //recordar agregar el enum del estado de la deuda (PENDIENTE, PAGADA, VENCIDA)
+    private final EstadoDeuda estado;
 
-    public Deuda(DeudaId id, String nombre, Limite limite, Double montoTotal, String descripcion, FechasDeuda fechas) {
+    private Deuda(DeudaId id, String nombre, Double montoTotal, String descripcion, FechasDeuda fechas, EstadoDeuda estado) {
+        if (id == null) {
+            throw new ValidationException("El ID de la deuda no puede ser nulo");
+        }
+        if (descripcion == null) {
+            throw new ValidationException("La descripción de la deuda no puede ser nula");
+        }
+        if (montoTotal == null || montoTotal <= 0) {
+            throw new ValidationException("El monto total de la deuda debe ser mayor que cero");
+        }
         this.id = id;
         this.nombre = nombre;
-        this.limite = limite;
         this.montoTotal = montoTotal;
         this.descripcion = descripcion;
         this.fechas = fechas;
+        this.estado = estado;
     }
 
     public DeudaId getId() {
@@ -34,10 +44,6 @@ public class Deuda {
         return montoTotal;
     }
 
-    public Limite getLimite() {
-        return limite;
-    }
-
     public String getDescripcion() {
         return descripcion;
     }
@@ -50,26 +56,29 @@ public class Deuda {
         return fechas.fechaVencimiento();
     }
 
+    public EstadoDeuda getEstado() {
+        return estado;
+    }
+
     @Override
     public String toString() {
         return "Deuda{" +
                 "id=" + id +
                 ", nombre='" + nombre + '\'' +
-                ", limite=" + limite +
                 ", montoTotal=" + montoTotal +
                 ", descripcion='" + descripcion + '\'' +
                 ", fechas=" + fechas +
+                ", estado=" + estado +
                 '}';
     }
 
     public static void main(String[] args) {
         DeudaId deudaId = DeudaId.of(java.util.UUID.randomUUID());
-        Limite limite = Limite.of("1000.0");
 
         LocalDate fechaManualCreacion = LocalDate.now().plusDays(20);
         LocalDate fechaManualVencimiento = LocalDate.now().plusDays(30);
         FechasDeuda fechasDeudaManual = FechasDeuda.of(fechaManualCreacion, fechaManualVencimiento);
-        Deuda deuda = new Deuda(deudaId, "Deuda Ejemplo", limite, 500.0, "Descripción de la Deuda Ejemplo", fechasDeudaManual);
+        Deuda deuda = new Deuda(deudaId, "Deuda Ejemplo", 500.0, "Descripción de la Deuda Ejemplo", fechasDeudaManual, EstadoDeuda.VENCIDA);
         System.out.println(deuda);
     }
 }

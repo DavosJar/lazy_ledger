@@ -3,6 +3,8 @@ package com.lazyledger.backend.deuda.dominio;
 import java.time.LocalDate;
 import java.util.Objects;
 
+import com.lazyledger.backend.commons.exceptions.ValidationException;
+
 public record FechasDeuda(LocalDate fechaCreacion, LocalDate fechaVencimiento) {
     //constructor canonico para validaciones
     public FechasDeuda{
@@ -11,19 +13,19 @@ public record FechasDeuda(LocalDate fechaCreacion, LocalDate fechaVencimiento) {
         Objects.requireNonNull(fechaVencimiento, "La fecha de vencimiento no puede ser nula");
         //validar que la fecha de creacion no sea una fecha pasada
         if(fechaCreacion.isBefore(LocalDate.now())){
-            throw new IllegalArgumentException("La fecha de creación no puede ser una fecha pasada");
+            throw new ValidationException("La fecha de creación no puede ser una fecha pasada");
         }
         //validar que la fecha de creación no sea posterior a la fecha de vencimiento
         if(fechaCreacion.isAfter(fechaVencimiento)){
-            throw new IllegalArgumentException("La fecha de creación no puede ser posterior a la fecha de vencimiento");
+            throw new ValidationException("La fecha de creación no puede ser posterior a la fecha de vencimiento");
         }
         //validar que la fecha de creacion no sea igual a la fecha de vencimiento
         if(fechaCreacion.isEqual(fechaVencimiento)){
-            throw new IllegalArgumentException("La fecha de creación no puede ser igual a la fecha de vencimiento");
+            throw new ValidationException("La fecha de creación no puede ser igual a la fecha de vencimiento");
         }
         //validar que la fecha de vencimiento no sea una fecha pasada.
         if(fechaVencimiento.isBefore(LocalDate.now())){
-            throw new IllegalArgumentException("La fecha de vencimiento no puede ser una fecha pasada");
+            throw new ValidationException("La fecha de vencimiento no puede ser una fecha pasada");
         }
             }
 
