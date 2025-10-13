@@ -204,3 +204,30 @@ server.port=8090
 ```
 
 Y ejecuta PostgreSQL localmente con la base de datos `lazyledger_db`.
+
+## Documentación de la API
+
+La API está documentada usando **OpenAPI 3.0** y **Swagger UI** para proporcionar una interfaz interactiva.
+
+### Tecnologías de Documentación
+- **SpringDoc OpenAPI**: Genera automáticamente la documentación OpenAPI desde las anotaciones del código
+- **Swagger UI**: Interfaz web interactiva para explorar y probar los endpoints
+
+### Endpoints de Documentación
+- **Swagger UI**: `http://localhost:8090/swagger-ui.html`
+- **OpenAPI JSON**: `http://localhost:8090/api-docs`
+
+### Módulos Documentados
+- **Cliente**: Gestión completa de clientes (persona/empresa)
+  - Crear, leer, actualizar y eliminar clientes
+  - Validaciones de negocio y formato de datos
+  - Paginación en listados
+  - Manejo de errores específico
+
+### Especificaciones Generales
+- **Autenticación**: No requerida en esta versión
+- **Formato**: JSON para requests y responses
+- **Códigos HTTP**: Estándar REST (200, 201, 400, 404, 409, 500)
+- **Paginación**: Parámetros `page` y `size` en endpoints de listado
+- **IDs**: Formato UUID v7 para unicidad temporal
+- **Validaciones**: Tanto a nivel de dominio como aplicación
