@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface ClienteRepository {
-    Cliente save(Cliente cliente);
+    Optional<Cliente> save(Cliente cliente);
     Optional<Cliente> findById(UUID id);
     List<Cliente> findAll();
     void delete(UUID id);

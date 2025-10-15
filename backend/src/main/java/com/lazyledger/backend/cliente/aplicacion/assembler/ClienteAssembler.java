@@ -10,34 +10,30 @@ import com.lazyledger.backend.commons.IdGenerator;
 import org.springframework.hateoas.Link;
 import org.springframework.stereotype.Component;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-import com.lazyledger.backend.cliente.presentacion.ClienteController;
+import java.util.Map;
 
 @Component
 public class ClienteAssembler implements BaseAssembler<ClienteDTO> {
 
     private final ClienteMapper clienteMapper;
+    private final ClienteHateoasLinkBuilder hateoasLinkBuilder;
     private final IdGenerator idGenerator;
 
-    public ClienteAssembler(ClienteMapper clienteMapper, IdGenerator idGenerator) {
+    public ClienteAssembler(ClienteMapper clienteMapper, ClienteHateoasLinkBuilder hateoasLinkBuilder, IdGenerator idGenerator) {
         this.clienteMapper = clienteMapper;
+        this.hateoasLinkBuilder = hateoasLinkBuilder;
         this.idGenerator = idGenerator;
     }
 
     @Override
     public ApiResponse<ClienteDTO> assemble(ClienteDTO dto) {
-        Link selfLink = linkTo(methodOn(ClienteController.class).getClienteById(dto.getId())).withSelfRel();
-        ApiResponse<ClienteDTO> response = new ApiResponse<>(dto, selfLink);
-        addCommonLinks(response);
-        return response;
+        Map<String, Link> links = hateoasLinkBuilder.buildLinks(dto);
+        return new ApiResponse<ClienteDTO>(dto, links);
     }
 
     @Override
     public void addCommonLinks(ApiResponse<ClienteDTO> response) {
-        // Agregar enlaces comunes si es necesario, por ejemplo, enlace a lista de clientes
-        Link allClientesLink = linkTo(methodOn(ClienteController.class).getAllClientes(0, 10)).withRel("all-clientes");
-        response.add(allClientesLink);
+        // Los enlaces ya están incluidos en el assemble
     }
 
     // Método para convertir ClienteSaveRequest a Cliente (dominio)
@@ -63,5 +59,10 @@ public class ClienteAssembler implements BaseAssembler<ClienteDTO> {
     // Método para convertir Cliente (dominio) a ClienteDTO
     public ClienteDTO toDTO(Cliente cliente) {
         return clienteMapper.toDTO(cliente);
+    }
+
+    // Método para construir enlaces HATEOAS para colección
+    public Map<String, Link> buildCollectionLinks(int page, int size, long totalElements, int totalPages) {
+        return hateoasLinkBuilder.buildCollectionLinks(page, size, totalElements, totalPages);
     }
 }
