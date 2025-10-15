@@ -32,6 +32,14 @@ public class Deuda {
         this.estado = estado;
     }
 
+    public static Deuda create(DeudaId id, String nombre, Double montoTotal, String descripcion, FechasDeuda fechas, EstadoDeuda estado) {
+        return new Deuda(id, nombre, montoTotal, descripcion, fechas, estado);
+    }
+
+    public static Deuda rehydrate(DeudaId id, String nombre, Double montoTotal, String descripcion, FechasDeuda fechas, EstadoDeuda estado) {
+        return new Deuda(id, nombre, montoTotal, descripcion, fechas, estado);
+    }
+
     public DeudaId getId() {
         return id;
     }

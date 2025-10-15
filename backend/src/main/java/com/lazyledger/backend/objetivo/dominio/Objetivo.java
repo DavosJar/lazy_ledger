@@ -1,5 +1,6 @@
 package com.lazyledger.backend.objetivo.dominio;
 
+import com.lazyledger.backend.commons.exceptions.ValidationException;
 import com.lazyledger.backend.commons.identificadores.ObjetivoId;
 
 public class Objetivo {
@@ -8,9 +9,24 @@ public class Objetivo {
     private final double montoObjetivo;
 
     public Objetivo(ObjetivoId id, String nombre, double montoObjetivo) {
+
+        if (nombre == null || nombre.trim().isEmpty()) {
+            throw new ValidationException("El nombre no puede ser nulo o vacío");
+        }
+        if (montoObjetivo <= 0) {
+            throw new ValidationException("El monto objetivo debe ser mayor que cero");
+        }
         this.id = id;
         this.nombre = nombre;
         this.montoObjetivo = montoObjetivo;
+    }
+
+    public static Objetivo create(ObjetivoId id, String nombre, double montoObjetivo) {
+        return new Objetivo(id, nombre, montoObjetivo);
+    }
+
+    public static Objetivo rehydrate(ObjetivoId id, String nombre, double montoObjetivo) {
+        return new Objetivo(id, nombre, montoObjetivo);
     }
 
     //getters
