@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.springframework.stereotype.Repository;
+
 import com.lazyledger.backend.miembroLedger.dominio.MiembroLedger;
 import com.lazyledger.backend.miembroLedger.dominio.rerpositorio.MiembroLedgerRepository;
 import com.lazyledger.backend.commons.enums.MiembroRol;
 import com.lazyledger.backend.commons.identificadores.ClienteId;
 import com.lazyledger.backend.commons.identificadores.LedgerId;
 
+@Repository
 public class MiembroJpaRepositoryImpl implements MiembroLedgerRepository{
     
     private final MiembroLedgerJpaRepository jpaRepository;
@@ -35,8 +38,16 @@ public class MiembroJpaRepositoryImpl implements MiembroLedgerRepository{
     }
     @Override
     public boolean existsByClienteIdAndLedgerId(UUID clienteId, UUID ledgerId) {
-        return jpaRepository.existsById(new MiembroLedgerId(clienteId, ledgerId));
+        return jpaRepository.existsByIdClienteIdAndIdLedgerId(clienteId, ledgerId);
     }
+
+    @Override
+    public List<MiembroLedger> findByClienteId(UUID clienteId) {
+        return jpaRepository.findByIdClienteId(clienteId).stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
 
     private MiembroLedger toDomain(MiembroLedgerEntity entity) {
         MiembroRol rol = MiembroRol.valueOf(entity.getRol().name());

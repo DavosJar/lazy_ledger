@@ -5,7 +5,6 @@ import java.util.Objects;
 import com.lazyledger.backend.commons.enums.MiembroRol;
 import com.lazyledger.backend.commons.exceptions.InvalidStateException;
 
-
 public class MiembroLedgerService {
 
     public MiembroLedger cambiarRol(MiembroLedger miembro, MiembroLedger solicitante, MiembroRol nuevoRol) {

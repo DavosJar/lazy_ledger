@@ -16,7 +16,7 @@ public interface MiembroLedgerRepository {
     Optional<MiembroLedger> findByClienteIdAndLedgerId(UUID clienteId, UUID ledgerId);
     List<MiembroLedger> findAll();
     boolean existsByClienteIdAndLedgerId(UUID clienteId, UUID ledgerId);
+    List<MiembroLedger> findByClienteId(UUID clienteId);
 
 
-    
 }
