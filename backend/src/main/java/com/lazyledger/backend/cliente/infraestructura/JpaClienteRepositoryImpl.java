@@ -23,11 +23,11 @@ public class JpaClienteRepositoryImpl implements ClienteRepository {
     }
 
     @Override
-    public Cliente save(Cliente cliente) {
+    public Optional<Cliente> save(Cliente cliente) {
         try {
             ClienteEntity entity = toEntity(cliente);
             ClienteEntity saved = jpaRepository.save(entity);
-            return toDomain(saved);
+            return Optional.of(toDomain(saved));
         } catch (Exception e) {
             throw new InfrastructureException("Error al guardar el cliente en la base de datos", e);
         }
@@ -95,7 +95,11 @@ public class JpaClienteRepositoryImpl implements ClienteRepository {
                 NombreCompleto.of(entity.getNombre(), entity.getApellido()),
                 Email.of(entity.getEmail()),
                 entity.getTipo(),
-                entity.getTelefono() != null ? Telefono.of(entity.getTelefono()) : null
+                entity.getTelefono() != null ? Telefono.of(entity.getTelefono()) : null,
+                null, // Dirección no mapeada en esta entidad
+                null, // Estado no mapeado en esta entidad
+                null, // Fecha de nacimiento no mapeada en esta entidad
+                false // isEmailVerified no mapeado en esta entidad
         );
     }
 }
