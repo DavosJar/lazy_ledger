@@ -50,16 +50,9 @@ public class ClienteUseCases {
         return createCliente(cliente);
     }
 
-    public Cliente getClienteById(UUID id) {
-        try {
-            return clienteRepository.findById(id)
-                    .orElseThrow(() -> new NotFoundException("Cliente no encontrado con ID: " + id));
-        } catch (Exception e) {
-            if (e instanceof NotFoundException) {
-                throw e;
-            }
-            throw new InfrastructureException("Error al buscar el cliente por ID", e);
-        }
+    public Optional<Cliente> getClienteById(UUID id) {
+        return clienteRepository.findById(id);
+
     }
 
     public void deleteCliente(UUID id) {

@@ -47,7 +47,8 @@ public class ClienteFacade {
     public ApiResponse<ClienteDTO> getClienteById(String id) {
         try {
             UUID uuid = UUID.fromString(id);
-            var cliente = clienteUseCases.getClienteById(uuid);
+            var cliente = clienteUseCases.getClienteById(uuid)
+                .orElseThrow(() -> new ApplicationException("Cliente no encontrado con ID: " + id));
             var dto = clienteMapper.toDTO(cliente);
             var links = hateoasLinkBuilder.buildLinks(dto);
             return responseFactory.createResponse(dto, links);

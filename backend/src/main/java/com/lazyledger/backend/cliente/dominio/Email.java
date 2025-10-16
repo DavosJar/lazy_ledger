@@ -9,8 +9,14 @@ public record Email(String email) {
             throw new ValidationException("El email no puede ser nulo o vacío");
         }
         email = email.trim();
+        // Validación más permisiva para emails existentes
         if (!isValidEmail(email)) {
-            throw new ValidationException("El formato del email es inválido");
+            // Permitir emails que al menos tengan @ y un dominio básico
+            if (!email.contains("@") || email.split("@").length != 2) {
+                throw new ValidationException("El formato del email es inválido");
+            }
+            // Log de warning pero permitir
+            System.out.println("Warning: Email con formato no estándar detectado: " + email);
         }
     }
     public static Email of(String email) {

@@ -223,11 +223,24 @@ La API está documentada usando **OpenAPI 3.0** y **Swagger UI** para proporcion
   - Validaciones de negocio y formato de datos
   - Paginación en listados
   - Manejo de errores específico
+- **MiembroLedger**: Gestión de membresías en ledgers colaborativos
+  - Invitaciones, cambios de rol, expulsiones
+  - Validaciones de permisos de propietario
+  - Headers de autorización preparados
+
+### Documentación Técnica Detallada
+Para información técnica completa de la API, consulte el **[Mini-Dossier Técnico API RESTful](backend/Mini-Dossier-Tecnico-API.md)** que incluye:
+- Especificaciones detalladas de todos los endpoints
+- Modelos de datos completos con ejemplos JSON
+- Principios RESTful implementados
+- Manejo de errores y códigos de estado
+- Arquitectura e implementación técnica
 
 ### Especificaciones Generales
-- **Autenticación**: No requerida en esta versión
+- **Autenticación**: Headers personalizados preparados (no implementados en MVP)
 - **Formato**: JSON para requests y responses
-- **Códigos HTTP**: Estándar REST (200, 201, 400, 404, 409, 500)
-- **Paginación**: Parámetros `page` y `size` en endpoints de listado
+- **Códigos HTTP**: Estándar REST (200, 201, 400, 403, 404, 409, 422, 500)
+- **Paginación**: Parámetros `page` (0-based) y `size` (máx. 100) en endpoints de listado
 - **IDs**: Formato UUID v7 para unicidad temporal
 - **Validaciones**: Tanto a nivel de dominio como aplicación
+- **Arquitectura**: Clean Architecture con separación de capas

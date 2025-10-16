@@ -57,7 +57,7 @@ public class MiembroJpaRepositoryImpl implements MiembroLedgerRepository{
         );
     }
     private MiembroLedgerEntity toEntity(MiembroLedger miembro) {
-        MiembroLedgerId id = new MiembroLedgerId(miembro.getClienteId().value(), miembro.getLedgerId().id());
+        MiembroLedgerId id = new MiembroLedgerId(miembro.getClienteId().value(), miembro.getLedgerId().value());
         return new MiembroLedgerEntity(
             id,
             miembro.getRol(),
