@@ -76,6 +76,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(com.lazyledger.backend.moduloSeguridad.api.exceptions.AutenticacionException.class)
+    public ResponseEntity<Object> handleAutenticacionException(com.lazyledger.backend.moduloSeguridad.api.exceptions.AutenticacionException ex, WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        body.put("type", "AUTHENTICATION_ERROR");
+        return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<Object> handleIllegalArgumentException(IllegalArgumentException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();

@@ -16,21 +16,19 @@ public class Cliente {
     private final Telefono telefono;
     private final Direccion direccion;
     private final EstadoCliente estado;
-    private final LocalDate fechaNacimiento;
+    private final FechaNacimiento fechaNacimiento;
     private final boolean isEmailVerified;
 
     private Cliente(ClienteId id, NombreCompleto nombreCompleto, Email email, TipoCliente tipo,
-                   Telefono telefono, Direccion direccion, EstadoCliente estado,
-                   LocalDate fechaNacimiento, boolean isEmailVerified) {
+                    Telefono telefono, Direccion direccion, EstadoCliente estado,
+                    FechaNacimiento fechaNacimiento, boolean isEmailVerified) {
         if (id == null) {
             throw new ValidationException("El ID del cliente no puede ser nulo");
-        }
-        if (nombreCompleto == null) {
-            throw new ValidationException("El nombre completo del cliente no puede ser nulo");
         }
         if (email == null) {
             throw new ValidationException("El email del cliente no puede ser nulo");
         }
+        // Para construcción mínima, nombreCompleto puede ser null
         this.id = id;
         this.nombreCompleto = nombreCompleto;
         this.email = email;
@@ -43,18 +41,22 @@ public class Cliente {
     }
 
     public static Cliente create(ClienteId id, NombreCompleto nombre, Email email, TipoCliente tipo,
-                               Telefono telefono, Direccion direccion, LocalDate fechaNacimiento) {
-        return new Cliente(id, nombre, email, tipo, telefono, direccion, EstadoCliente.ACTIVO, fechaNacimiento, false);
+                                Telefono telefono, Direccion direccion, LocalDate fechaNacimiento) {
+        return new Cliente(id, nombre, email, tipo, telefono, direccion, EstadoCliente.ACTIVO, FechaNacimiento.of(fechaNacimiento), false);
     }
 
     public static Cliente create(ClienteId id, NombreCompleto nombre, Email email, TipoCliente tipo, Telefono telefono) {
         return new Cliente(id, nombre, email, tipo, telefono, null, EstadoCliente.ACTIVO, null, false);
     }
 
+    public static Cliente createMinimal(ClienteId id, Email email) {
+        return new Cliente(id, null, email, TipoCliente.INDIVIDUAL, null, null, EstadoCliente.ACTIVO, null, false);
+    }
+
     public static Cliente rehydrate(ClienteId id, NombreCompleto nombre, Email email, TipoCliente tipo,
-                                  Telefono telefono, Direccion direccion, EstadoCliente estado,
-                                  LocalDate fechaNacimiento, boolean isEmailVerified) {
-        return new Cliente(id, nombre, email, tipo, telefono, direccion, estado, fechaNacimiento, isEmailVerified);
+                                   Telefono telefono, Direccion direccion, EstadoCliente estado,
+                                   LocalDate fechaNacimiento, boolean isEmailVerified) {
+        return new Cliente(id, nombre, email, tipo, telefono, direccion, estado, FechaNacimiento.of(fechaNacimiento), isEmailVerified);
     }
 
     public Cliente verificarEmail() {
@@ -71,7 +73,7 @@ public class Cliente {
 
     public boolean esMayorDeEdad() {
         return fechaNacimiento != null &&
-               Period.between(fechaNacimiento, LocalDate.now()).getYears() >= 18;
+                Period.between(fechaNacimiento.getFecha(), LocalDate.now()).getYears() >= 18;
     }
 
     public Cliente cambiarDireccion(Direccion nuevaDireccion) {
@@ -111,7 +113,7 @@ public class Cliente {
         return estado;
     }
 
-    public LocalDate getFechaNacimiento() {
+    public FechaNacimiento getFechaNacimiento() {
         return fechaNacimiento;
     }
 
