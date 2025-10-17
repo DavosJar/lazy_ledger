@@ -14,6 +14,7 @@ import com.lazyledger.backend.commons.enums.TipoCliente;
 import com.lazyledger.backend.commons.exceptions.DuplicateException;
 import com.lazyledger.backend.commons.exceptions.NotFoundException;
 import com.lazyledger.backend.commons.exceptions.InfrastructureException;
+
 public class ClienteUseCases {
 
     private final ClienteRepository clienteRepository;

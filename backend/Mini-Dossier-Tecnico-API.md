@@ -1,3 +1,15 @@
+---
+title: "Mini-Dossier Técnico API RESTful - LazyLedger"
+author: "César López, Alexis Java, César Ramos"
+date: "17/10/2025"
+geometry: "margin=2.5cm"
+mainfont: "DejaVu Sans"
+fontsize: 11pt
+toc: true
+toc-depth: 3
+colorlinks: true
+linkcolor: blue
+---
 # Mini-Dossier Técnico API RESTful - LazyLedger
 
 **Proyecto:** LazyLedger MVP
@@ -13,10 +25,12 @@
 **Objetivo:** Desarrollar un MVP backend que permita gestionar y analizar operaciones financieras colaborativamente mediante interfaces conversacionales (chat) con respuestas contextualizadas.
 
 **Alcance Actual:**
-- CRUD completo de Clientes
-- Gestión de membresías en Ledgers colaborativos (invitaciones, roles, expulsiones)
-- Arquitectura limpia con separación de capas
-- Principios RESTful, paginación y validaciones de negocio
+- Implementado: Autenticación JWT completa con registro y login
+- Implementado: CRUD completo de Clientes con perfiles de usuario
+- Implementado: Gestión de membresías en Ledgers colaborativos (invitaciones, roles, expulsiones)
+- Implementado: Arquitectura limpia DDD con separación de capas
+- Implementado: Principios RESTful, paginación y validaciones de negocio
+- Pendiente: Módulos de Ledger, Transacciones, Deudas y Objetivos (estructurados)
 
 **Tecnologías:** Spring Boot, Spring JPA, SpringDoc/Swagger, Docker, Clean Architecture.
 
@@ -24,7 +38,8 @@
 
 **URL Base:** `http://localhost:8090/`
 **Formato:** JSON exclusivamente
-**Autenticación:** Pendiente de implementación (headers personalizados planeados)
+**Autenticación:** JWT Bearer Token (implementado)
+**Autorización:** Basada en roles y membresía de ledger
 **Paginación:** `page` (0-based), `size` (máx. 100)
 
 ### 2.1. Principios RESTful Implementados
@@ -77,47 +92,103 @@
 | `{"ledgerId": "..."}` | `{"clienteId": "...", "ledgerId": "...", "rol": "MIEMBRO", "activo": true}` |
 ## 4. Endpoints Principales
 
-### 4.1. Clientes
+### 4.1. Autenticación
 
 | Método | Endpoint | Descripción | Estado |
 |--------|----------|-------------|--------|
-| GET | `/clientes` | Lista paginada de clientes | ✅ |
-| GET | `/clientes/{id}` | Cliente por ID | ✅ |
-| POST | `/clientes` | Crear cliente | ✅ |
-| PUT | `/clientes/{id}` | Actualizar cliente | ✅ |
-| DELETE | `/clientes/{id}` | Eliminar cliente | ✅ |
+| POST | `/api/auth/signup` | Registro de nuevo usuario | Implementado |
+| POST | `/api/auth/signin` | Autenticación de usuario | Immplementado |
 
-**Ejemplo POST /clientes:**
+### 4.2. Clientes
+
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/clientes` | Lista paginada de clientes | Implementado |
+| GET | `/api/clientes/{id}` | Cliente por ID | Implementado |
+| GET | `/api/clientes/perfil` | Perfil del usuario autenticado | Pendiente |
+| PUT | `/api/clientes/{id}` | Actualizar cliente | Implementado |
+| PUT | `/api/clientes/perfil` | Actualizar perfil propio | Pendiente |
+| DELETE | `/api/clientes/{id}` | Eliminar cliente | Implementado |
+*Nota: Los clientes se crean automáticamente durante el registro de usuario*
+
+**Nota:** Los clientes se crean automáticamente durante el registro de usuario en `/api/auth/signup`. Para actualizar datos adicionales del perfil, usar `PUT /api/clientes/perfil`.
+
+### 4.3. Ledgers
+
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/ledgers` | Lista de mis ledgers | Pendiente |
+| GET | `/api/ledgers/{id}` | Ledger específico | Pendiente |
+| POST | `/api/ledgers` | Crear nuevo ledger | Pendiente |
+| PUT | `/api/ledgers/{id}` | Actualizar ledger | Pendiente |
+| PUT | `/api/ledgers/{id}/estado` | Cambiar estado del ledger | Pendiente |
+| DELETE | `/api/ledgers/{id}` | Eliminar ledger | Pendiente |
+
+### 4.4. Transacciones
+
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/ledgers/{ledgerId}/transacciones` | Lista de transacciones | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/transacciones/{id}` | Transacción específica | Pendiente |
+| POST | `/api/ledgers/{ledgerId}/transacciones` | Crear transacción | Pendiente |
+| PUT | `/api/ledgers/{ledgerId}/transacciones/{id}` | Actualizar transacción | Pendiente |
+| DELETE | `/api/ledgers/{ledgerId}/transacciones/{id}` | Eliminar transacción | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/transacciones/resumen` | Resumen por período | Pendiente |
+
+### 4.5. Deudas
+
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/ledgers/{ledgerId}/deudas` | Lista de deudas | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/deudas/{id}` | Deuda específica | Pendiente |
+| POST | `/api/ledgers/{ledgerId}/deudas` | Crear deuda | Pendiente |
+| PUT | `/api/ledgers/{ledgerId}/deudas/{id}` | Actualizar deuda | Pendiente |
+| DELETE | `/api/ledgers/{ledgerId}/deudas/{id}` | Eliminar deuda | Pendiente |
+| POST | `/api/ledgers/{ledgerId}/deudas/{id}/pagos` | Registrar pago | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/deudas/pendientes` | Deudas pendientes | Pendiente |
+
+### 4.6. Objetivos
+
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/ledgers/{ledgerId}/objetivos` | Lista de objetivos | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/objetivos/{id}` | Objetivo específico | Pendiente |
+| POST | `/api/ledgers/{ledgerId}/objetivos` | Crear objetivo | Pendiente |
+| PUT | `/api/ledgers/{ledgerId}/objetivos/{id}` | Actualizar objetivo | Pendiente |
+| DELETE | `/api/ledgers/{ledgerId}/objetivos/{id}` | Eliminar objetivo | Pendiente |
+| POST | `/api/ledgers/{ledgerId}/objetivos/{id}/progreso` | Actualizar progreso | Pendiente |
+
+### 4.7. Miembros de Ledger
+
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/ledgers/{ledgerId}/miembros` | Miembros del ledger | Implementado |
+| POST | `/api/ledgers/{ledgerId}/miembros/invitar` | Invitar miembro | Implementado |
+| PUT | `/api/ledgers/{ledgerId}/miembros/{id}/rol` | Cambiar rol | Implementado |
+| DELETE | `/api/ledgers/{ledgerId}/miembros/{id}` | Expulsar miembro | Implementado |
+| POST | `/api/ledgers/{ledgerId}/miembros/{id}/aceptar` | Aceptar invitación | Pendiente |
+| POST | `/api/ledgers/{ledgerId}/miembros/{id}/rechazar` | Rechazar invitación | Pendiente |
+
+### 4.8. Reportes y Dashboard
+
+| Método | Endpoint | Descripción | Estado |
+|--------|----------|-------------|--------|
+| GET | `/api/dashboard/resumen` | Resumen general | Pendiente |
+| GET | `/api/dashboard/ledgers` | Estado de ledgers | Pendiente |
+| GET | `/api/dashboard/alertas` | Alertas importantes | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/reportes/balance` | Balance general | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/reportes/transacciones` | Reporte transacciones | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/reportes/deudas` | Reporte deudas | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/reportes/objetivos` | Progreso objetivos | Pendiente |
+| GET | `/api/ledgers/{ledgerId}/reportes/mensual` | Reporte mensual | Pendiente |
+
+**Ejemplo POST /api/ledgers/{ledgerId}/miembros/invitar:**
 ```json
 {
-  "nombre": "Juan",
-  "apellido": "Pérez",
-  "email": "juan.perez@example.com",
-  "tipo": "PERSONA",
-  "telefono": "+593987654321"
+  "clienteId": "01HXXXXXXXXXXXXXXXXXXXXX"
 }
 ```
-
-### 4.2. Miembros de Ledger
-
-| Método | Endpoint | Descripción | Headers |
-|--------|----------|-------------|---------|
-| GET | `/miembros-ledger/usuario/{clienteId}/ledgers` | Ledgers del usuario | - |
-| POST | `/miembros-ledger/invitar` | Invitar miembro | `X-Solicitante-Id` (planeado) |
-| PUT | `/miembros-ledger/cambiar-rol` | Cambiar rol | `X-Solicitante-Id` (planeado) |
-| DELETE | `/miembros-ledger/expulsar` | Expulsar miembro | `X-Solicitante-Id` (planeado) |
-| GET | `/miembros-ledger/ledger/{ledgerId}/miembros` | Miembros del ledger | - |
-| GET | `/miembros-ledger/{clienteId}/{ledgerId}` | Membresía específica | - |
-| DELETE | `/miembros-ledger/eliminar-ledger` | Eliminar ledger | `X-Solicitante-Id` (planeado) |
-
-**Ejemplo POST /miembros-ledger/invitar:**
-```json
-{
-  "clienteId": "01HXXXXXXXXXXXXXXXXXXXXX",
-  "ledgerId": "01HXXXXXXXXXXXXXXXXXXXXX"
-}
-```
-*Header planeado: `X-Solicitante-Id: [ID-propietario]`*
+*Requiere autenticación JWT*
 
 ## 5. Manejo de Errores
 
@@ -165,15 +236,27 @@ mvn spring-boot:run
 docker-compose up -d
 ```
 
-**Testing Básico (sin autenticación implementada):**
+**Testing Básico:**
 ```bash
-# Crear cliente
-curl -X POST http://localhost:8090/clientes \
+# 1. Registrar usuario
+curl -X POST http://localhost:8090/api/auth/signup \
   -H "Content-Type: application/json" \
+  -d '{"nombreUsuario":"testuser","contrasena":"password123","confirmarContrasena":"password123","email":"test@example.com"}'
+
+# 2. Login (obtener token JWT)
+curl -X POST http://localhost:8090/api/auth/signin \
+  -H "Content-Type: application/json" \
+  -d '{"nombreUsuario":"testuser","contrasena":"password123"}'
+
+# 3. Crear cliente (con token JWT)
+curl -X POST http://localhost:8090/api/clientes \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{"nombre":"Test","apellido":"User","email":"test@example.com","tipo":"PERSONA","telefono":"123456789"}'
 
-# Listar clientes
-curl http://localhost:8090/clientes
+# 4. Listar clientes
+curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+  http://localhost:8090/api/clientes
 ```
 
 ## 8. Uso de la API
@@ -185,10 +268,10 @@ curl http://localhost:8090/clientes
 **Resumen:** API RESTful completa con Clean Architecture, CRUD de clientes, gestión de membresías en ledgers colaborativos, validaciones de negocio y documentación automática.
 
 **Trabajo Futuro:**
+- Implementar módulos de Ledger, Transacciones, Deudas y Objetivos
 - Interfaz conversacional con IA para consultas financieras
-- Módulos de transacciones y análisis financiero
-- Dashboards y reportes interactivos
-- Autenticación JWT y permisos avanzados
-- Integración con servicios externos
+- Dashboards y reportes interactivos avanzados
+- Integración con servicios externos (bancos, tarjetas)
 - Notificaciones en tiempo real
-- Tests automatizados y monitoreo
+- Tests automatizados completos y monitoreo
+- Optimización de rendimiento y caching

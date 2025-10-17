@@ -229,12 +229,15 @@ La API está documentada usando **OpenAPI 3.0** y **Swagger UI** para proporcion
   - Headers de autorización preparados
 
 ### Documentación Técnica Detallada
-Para información técnica completa de la API, consulte el **[Mini-Dossier Técnico API RESTful](backend/Mini-Dossier-Tecnico-API.md)** que incluye:
+Para información técnica completa de la API, consulte el **[Mini-Dossier Técnico API RESTful](Mini-Dossier-Tecnico-API.md)** que incluye:
 - Especificaciones detalladas de todos los endpoints
 - Modelos de datos completos con ejemplos JSON
 - Principios RESTful implementados
 - Manejo de errores y códigos de estado
 - Arquitectura e implementación técnica
+
+### Registro de Prompts de IA
+Para ver el registro completo de prompts utilizados con la IA durante el desarrollo, consulte **[Registro-Prompts.md](Registro-Prompts.md)**.
 
 ### Especificaciones Generales
 - **Autenticación**: Headers personalizados preparados (no implementados en MVP)
