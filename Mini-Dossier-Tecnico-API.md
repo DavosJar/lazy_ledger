@@ -1,15 +1,3 @@
----
-title: "Mini-Dossier Técnico API RESTful - LazyLedger"
-author: "César López, Alexis Java, César Ramos"
-date: "17/10/2025"
-geometry: "margin=2.5cm"
-mainfont: "DejaVu Sans"
-fontsize: 11pt
-toc: true
-toc-depth: 3
-colorlinks: true
-linkcolor: blue
----
 # Mini-Dossier Técnico API RESTful - LazyLedger
 
 **Proyecto:** LazyLedger MVP
