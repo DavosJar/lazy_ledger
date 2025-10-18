@@ -10,7 +10,7 @@ import com.lazyledger.backend.commons.enums.MiembroRol;
 import com.lazyledger.backend.commons.identificadores.ClienteId;
 import com.lazyledger.backend.commons.identificadores.LedgerId;
 import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.MiembroLedger;
-import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.rerpositorio.MiembroLedgerRepository;
+import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.repositorio.MiembroLedgerRepository;
 
 @Repository
 public class MiembroJpaRepositoryImpl implements MiembroLedgerRepository{
@@ -46,6 +46,12 @@ public class MiembroJpaRepositoryImpl implements MiembroLedgerRepository{
         return jpaRepository.findByIdClienteId(clienteId).stream()
                 .map(this::toDomain)
                 .toList();
+    }
+    @Override
+    public Optional<MiembroLedger> findById(UUID id) {
+        return jpaRepository.findByIdClienteId(id).stream()
+                .findFirst()
+                .map(this::toDomain);
     }
 
 

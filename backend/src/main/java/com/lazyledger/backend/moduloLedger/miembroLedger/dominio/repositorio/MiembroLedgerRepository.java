@@ -1,4 +1,4 @@
-package com.lazyledger.backend.moduloLedger.miembroLedger.dominio.rerpositorio;
+package com.lazyledger.backend.moduloLedger.miembroLedger.dominio.repositorio;
 
 import java.util.UUID;
 
@@ -17,6 +17,7 @@ public interface MiembroLedgerRepository {
     List<MiembroLedger> findAll();
     boolean existsByClienteIdAndLedgerId(UUID clienteId, UUID ledgerId);
     List<MiembroLedger> findByClienteId(UUID clienteId);
+    Optional<MiembroLedger> findById(UUID id);
 
 
 }
