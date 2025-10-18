@@ -6,7 +6,7 @@ import com.lazyledger.backend.commons.exceptions.NotFoundException;
 import com.lazyledger.backend.commons.exceptions.ValidationException;
 import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.MiembroLedger;
 import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.MiembroLedgerService;
-import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.rerpositorio.MiembroLedgerRepository;
+import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.repositorio.MiembroLedgerRepository;
 
 public class ExpulsarMiembroUseCase {
 

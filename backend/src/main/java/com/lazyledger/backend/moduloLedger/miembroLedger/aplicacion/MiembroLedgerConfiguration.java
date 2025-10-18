@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.MiembroLedgerService;
-import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.rerpositorio.MiembroLedgerRepository;
+import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.repositorio.MiembroLedgerRepository;
 import com.lazyledger.backend.modulocliente.dominio.repositorio.ClienteRepository;
 
 @Configuration

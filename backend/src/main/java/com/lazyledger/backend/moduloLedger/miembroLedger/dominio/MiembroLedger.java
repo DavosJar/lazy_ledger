@@ -68,6 +68,19 @@ public class MiembroLedger {
         }
         return new MiembroLedger(this.clienteId, this.rol, this.ledgerId, true);
     }
+    public boolean puedeGestionarLedger() {
+        return this.rol == MiembroRol.PROPIETARIO;
+    }
+    public boolean puedeGestionarMiembros() {
+        return this.rol == MiembroRol.PROPIETARIO;
+    }
+    public boolean puedeGestionarElementos() {
+        return this.rol == MiembroRol.PROPIETARIO || this.rol == MiembroRol.ASISTENTE;
+    }
+
+    public boolean puedeVerElementos() {
+        return this.rol == MiembroRol.PROPIETARIO || this.rol == MiembroRol.ASISTENTE || this.rol == MiembroRol.ANALISTA;
+    }
 
     // Getters
     public ClienteId getClienteId() {

@@ -12,7 +12,7 @@ import com.lazyledger.backend.api.ResponseFactory;
 import com.lazyledger.backend.commons.identificadores.LedgerId;
 import com.lazyledger.backend.moduloLedger.miembroLedger.aplicacion.assembler.MiembroLedgerHateoasLinkBuilder;
 import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.MiembroLedger;
-import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.rerpositorio.MiembroLedgerRepository;
+import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.repositorio.MiembroLedgerRepository;
 import com.lazyledger.backend.moduloLedger.miembroLedger.presentacion.dto.MiembroLedgerDTO;
 import com.lazyledger.backend.moduloLedger.miembroLedger.presentacion.mapper.MiembroLedgerMapper;
 

@@ -8,6 +8,7 @@ import com.lazyledger.backend.commons.identificadores.LedgerId;
 import com.lazyledger.backend.moduloLedger.ledger.dominio.Ledger;
 import com.lazyledger.backend.moduloLedger.ledger.presentacion.dto.LazyDTO;
 import com.lazyledger.backend.moduloLedger.ledger.presentacion.dto.LazySaveRequest;
+import com.lazyledger.backend.commons.enums.EstadoLedger;
 
 @Component
 public class LazyMapper {
@@ -25,7 +26,8 @@ public class LazyMapper {
             return Ledger.create(
                 LedgerId.of(UUID.fromString(dto.getId())),
                 dto.getNombre() != null ? dto.getNombre() : "",
-                dto.getDescripcion() != null ? dto.getDescripcion() : ""
+                dto.getDescripcion() != null ? dto.getDescripcion() : "",
+                EstadoLedger.ACTIVO
             );
         } catch (ValidationException e) {
             throw new ValidationException("Datos inválidos en el DTO del ledger: " + e.getMessage(), e);
@@ -37,7 +39,8 @@ public class LazyMapper {
             return Ledger.create(
                 LedgerId.of(UUID.randomUUID()),
                 request.getNombre() != null ? request.getNombre() : "",
-                request.getDescripcion() != null ? request.getDescripcion() : ""
+                request.getDescripcion() != null ? request.getDescripcion() : "",
+                EstadoLedger.ACTIVO
             );
         } catch (ValidationException e) {
             throw new ValidationException("Datos inválidos en la solicitud de guardar ledger: " + e.getMessage(), e);

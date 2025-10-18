@@ -9,7 +9,7 @@ import com.lazyledger.backend.commons.identificadores.ClienteId;
 import com.lazyledger.backend.commons.identificadores.LedgerId;
 import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.MiembroLedger;
 import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.MiembroLedgerService;
-import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.rerpositorio.MiembroLedgerRepository;
+import com.lazyledger.backend.moduloLedger.miembroLedger.dominio.repositorio.MiembroLedgerRepository;
 import com.lazyledger.backend.modulocliente.dominio.repositorio.ClienteRepository;
 
 public class InvitarMiembroUseCase {
