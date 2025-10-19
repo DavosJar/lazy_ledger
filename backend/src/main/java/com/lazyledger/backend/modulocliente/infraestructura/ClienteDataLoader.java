@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.lazyledger.backend.modulocliente.aplicacion.ClienteFacade;
+import com.lazyledger.backend.modulocliente.dominio.Cliente;
 import com.lazyledger.backend.modulocliente.presentacion.dto.ClienteSaveRequest;
 
 /**

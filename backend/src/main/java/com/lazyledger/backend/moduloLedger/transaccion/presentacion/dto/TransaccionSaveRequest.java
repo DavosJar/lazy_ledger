@@ -2,6 +2,7 @@ package com.lazyledger.backend.moduloLedger.transaccion.presentacion.dto;
 
 public class TransaccionSaveRequest {
     private String ledgerId;
+    private String clienteId;  // ID del cliente que crea la transacción (debe ser miembro del ledger)
     private Double monto;
     private String tipo;
     private String categoria;
@@ -11,9 +12,10 @@ public class TransaccionSaveRequest {
     // Constructors
     public TransaccionSaveRequest() {}
 
-    public TransaccionSaveRequest(String ledgerId, Double monto, String tipo, 
+    public TransaccionSaveRequest(String ledgerId, String clienteId, Double monto, String tipo, 
                                  String categoria, String descripcion, String fecha) {
         this.ledgerId = ledgerId;
+        this.clienteId = clienteId;
         this.monto = monto;
         this.tipo = tipo;
         this.categoria = categoria;
@@ -28,6 +30,14 @@ public class TransaccionSaveRequest {
 
     public void setLedgerId(String ledgerId) {
         this.ledgerId = ledgerId;
+    }
+
+    public String getClienteId() {
+        return clienteId;
+    }
+
+    public void setClienteId(String clienteId) {
+        this.clienteId = clienteId;
     }
 
     public Double getMonto() {

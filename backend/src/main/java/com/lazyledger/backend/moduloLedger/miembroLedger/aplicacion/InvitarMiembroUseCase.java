@@ -2,7 +2,6 @@ package com.lazyledger.backend.moduloLedger.miembroLedger.aplicacion;
 
 import java.util.UUID;
 
-import com.lazyledger.backend.commons.enums.MiembroRol;
 import com.lazyledger.backend.commons.exceptions.NotFoundException;
 import com.lazyledger.backend.commons.exceptions.ValidationException;
 import com.lazyledger.backend.commons.identificadores.ClienteId;
@@ -28,16 +27,13 @@ public class InvitarMiembroUseCase {
 
     public MiembroLedger execute(UUID solicitanteId, UUID clienteId, UUID ledgerId) {
         // Validar que el solicitante sea propietario
-        ClienteId solicitanteClienteId = ClienteId.of(solicitanteId);
         LedgerId ledgerIdObj = LedgerId.of(ledgerId);
 
         MiembroLedger solicitante = miembroLedgerRepository
             .findByClienteIdAndLedgerId(solicitanteId, ledgerId)
             .orElseThrow(() -> new NotFoundException("Solicitante no es miembro del ledger"));
 
-        if (!solicitante.esPropietario()) {
-            throw new ValidationException("Solo el propietario puede invitar miembros");
-        }
+        // Autorización de propietario se valida nuevamente en el servicio de dominio
 
         // Validar que el cliente invitado exista y esté activo
         ClienteId invitadoClienteId = ClienteId.of(clienteId);
@@ -46,13 +42,19 @@ public class InvitarMiembroUseCase {
             throw new ValidationException("El cliente invitado no existe");
         }
 
-        // Verificar que el invitado no sea ya miembro
-        if (miembroLedgerRepository.existsByClienteIdAndLedgerId(clienteId, ledgerId)) {
-            throw new ValidationException("El cliente ya es miembro del ledger");
+            // Verificar que el invitado no sea ya miembro activo
+            var miembroExistente = miembroLedgerRepository.findByClienteIdAndLedgerId(clienteId, ledgerId);
+            if (miembroExistente.isPresent()) {
+                if (miembroExistente.get().isActivo()) {
+                    throw new ValidationException("El cliente ya es miembro activo del ledger");
+                } else {
+                    // Si existe pero está inactivo (invitación pendiente), la reenviamos
+                    throw new ValidationException("El cliente ya tiene una invitación pendiente");
+                }
         }
 
-        // Crear nuevo miembro con rol ASISTENTE
-        MiembroLedger nuevoMiembro = MiembroLedger.create(invitadoClienteId, ledgerIdObj, MiembroRol.ASISTENTE);
+            // Delegar la creación al servicio de dominio (miembro inactivo = invitación)
+            MiembroLedger nuevoMiembro = miembroLedgerService.invitar(solicitante, invitadoClienteId, ledgerIdObj);
 
         // Guardar en repositorio
         return miembroLedgerRepository.save(nuevoMiembro)

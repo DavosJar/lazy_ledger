@@ -19,4 +19,9 @@ public interface TransaccionRepository {
     List<Transaccion> findByCategoria(Categoria categoria);
     boolean existsByLedgerId(UUID ledgerId);
     void deleteByLedgerId(UUID ledgerId);
+    
+    // Método para buscar con especificaciones dinámicas
+    List<Transaccion> buscarConFiltros(UUID ledgerId, java.time.LocalDateTime fechaDesde,
+                                        java.time.LocalDateTime fechaHasta, TipoTransaccion tipo,
+                                        Categoria categoria, Double montoMinimo, Double montoMaximo);
 }

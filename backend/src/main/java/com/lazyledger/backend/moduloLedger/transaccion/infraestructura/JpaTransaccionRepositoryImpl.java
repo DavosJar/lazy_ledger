@@ -10,7 +10,10 @@ import com.lazyledger.backend.moduloLedger.transaccion.dominio.repositorio.Trans
 import com.lazyledger.backend.commons.identificadores.LedgerId;
 import com.lazyledger.backend.commons.enums.TipoTransaccion;
 import com.lazyledger.backend.commons.enums.Categoria;
+import com.lazyledger.backend.moduloLedger.transaccion.infraestructura.especificaciones.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Repository;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -138,5 +141,43 @@ public class JpaTransaccionRepositoryImpl implements TransaccionRepository {
                 entity.getDescripcion() != null ? Descripcion.of(entity.getDescripcion()) : null,
                 Fecha.of(entity.getFecha())
         );
+    }
+
+    @Override
+    public List<Transaccion> buscarConFiltros(UUID ledgerId, LocalDateTime fechaDesde,
+                                                LocalDateTime fechaHasta, TipoTransaccion tipo,
+                                                Categoria categoria, Double montoMinimo, Double montoMaximo) {
+        try {
+            // El ledgerId es OBLIGATORIO - las transacciones siempre pertenecen a un ledger
+            if (ledgerId == null) {
+                throw new IllegalArgumentException("El ledgerId es obligatorio para buscar transacciones");
+            }
+            
+            // Iniciar con el filtro de ledger (obligatorio)
+            Specification<TransaccionEntity> spec = TransaccionPorLedgerSpec.porLedger(ledgerId);
+            
+            // Combinar con los demás filtros opcionales usando AND
+            if (fechaDesde != null || fechaHasta != null) {
+                spec = spec.and(TransaccionPorIntervaloFechasSpec.porIntervaloFechas(fechaDesde, fechaHasta));
+            }
+            
+            if (tipo != null) {
+                spec = spec.and(TransaccionPorTipoSpec.porTipo(tipo));
+            }
+            
+            if (categoria != null) {
+                spec = spec.and(TransaccionPorCategoriaSpec.porCategoria(categoria));
+            }
+            
+            if (montoMinimo != null || montoMaximo != null) {
+                spec = spec.and(TransaccionPorRangoMontoSpec.porRangoMonto(montoMinimo, montoMaximo));
+            }
+            
+            return jpaRepository.findAll(spec).stream()
+                    .map(this::toDomain)
+                    .toList();
+        } catch (Exception e) {
+            throw new InfrastructureException("Error al buscar transacciones con filtros", e);
+        }
     }
 }

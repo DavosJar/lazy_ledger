@@ -39,4 +39,19 @@ public class MiembroLedgerConfiguration {
     public MiembroLedgerService miembroLedgerService() {
         return new MiembroLedgerService();
     }
+
+        @Bean
+        public AceptarInvitacionUseCase aceptarInvitacionUseCase(MiembroLedgerRepository miembroLedgerRepository) {
+            return new AceptarInvitacionUseCase(miembroLedgerRepository);
+        }
+
+        @Bean
+        public RechazarInvitacionUseCase rechazarInvitacionUseCase(MiembroLedgerRepository miembroLedgerRepository) {
+            return new RechazarInvitacionUseCase(miembroLedgerRepository);
+        }
+
+        @Bean
+        public ListarInvitacionesPendientesUseCase listarInvitacionesPendientesUseCase(MiembroLedgerRepository miembroLedgerRepository) {
+            return new ListarInvitacionesPendientesUseCase(miembroLedgerRepository);
+        }
 }

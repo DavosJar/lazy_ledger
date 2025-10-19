@@ -11,7 +11,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
 public class TransaccionPagedResponseBuilder {
-    public PagedResponse<TransaccionDTO> build(List<TransaccionDTO> data, int page, int size, long totalElements, int totalPages) {
+   /* public PagedResponse<TransaccionDTO> build(List<TransaccionDTO> data, int page, int size, long totalElements, int totalPages) {
         Link selfLink = linkTo(methodOn(TransaccionController.class).getAllTransacciones(page, size)).withSelfRel();
         List<Link> links = new ArrayList<>();
         links.add(selfLink);
@@ -37,5 +37,5 @@ public class TransaccionPagedResponseBuilder {
         }
 
         return null;//new PagedResponse<>(data, page, size, totalElements, totalPages, links.toArray(new Link[0]));
-    }
+    }*/
 }

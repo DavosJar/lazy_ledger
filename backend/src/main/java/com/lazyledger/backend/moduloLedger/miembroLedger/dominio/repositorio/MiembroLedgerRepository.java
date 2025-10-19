@@ -18,6 +18,5 @@ public interface MiembroLedgerRepository {
     boolean existsByClienteIdAndLedgerId(UUID clienteId, UUID ledgerId);
     List<MiembroLedger> findByClienteId(UUID clienteId);
     Optional<MiembroLedger> findById(UUID id);
-
-
+        void delete(UUID clienteId, UUID ledgerId);
 }

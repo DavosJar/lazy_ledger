@@ -17,9 +17,23 @@ public class MiembroLedgerId implements Serializable {
     public MiembroLedgerId() {
     }
 
-    public MiembroLedgerId(UUID ledgerId, UUID clienteId) {
+    /**
+     * Constructor privado para forzar el uso de métodos factory con nombres explícitos.
+     * Esto previene errores al intercambiar los parámetros UUID.
+     */
+    private MiembroLedgerId(UUID ledgerId, UUID clienteId) {
         this.ledgerId = ledgerId;
         this.clienteId = clienteId;
+    }
+
+    /**
+     * Método factory con parámetros nombrados explícitamente.
+     * Uso: MiembroLedgerId.of(ledgerId, clienteId)
+     */
+    public static MiembroLedgerId of(UUID ledgerId, UUID clienteId) {
+        if (ledgerId == null) throw new IllegalArgumentException("ledgerId no puede ser null");
+        if (clienteId == null) throw new IllegalArgumentException("clienteId no puede ser null");
+        return new MiembroLedgerId(ledgerId, clienteId);
     }
 
     public UUID getLedgerId() {
