@@ -27,7 +27,7 @@ public class MiembroJpaRepositoryImpl implements MiembroLedgerRepository{
     }
     @Override
     public Optional<MiembroLedger> findByClienteIdAndLedgerId(UUID clienteId, UUID ledgerId) {
-        return jpaRepository.findById(new MiembroLedgerId(clienteId, ledgerId))
+        return jpaRepository.findById(MiembroLedgerId.of(ledgerId, clienteId))
                 .map(this::toDomain);
     }
     @Override
@@ -53,17 +53,24 @@ public class MiembroJpaRepositoryImpl implements MiembroLedgerRepository{
                 .findFirst()
                 .map(this::toDomain);
     }
-
+    
+        @Override
+        public void delete(UUID clienteId, UUID ledgerId) {
+            MiembroLedgerId id = MiembroLedgerId.of(ledgerId, clienteId);
+            jpaRepository.deleteById(id);
+        }
 
     private MiembroLedger toDomain(MiembroLedgerEntity entity) {
         MiembroRol rol = MiembroRol.valueOf(entity.getRol().name());
-        return MiembroLedger.create(ClienteId.of(entity.getClienteId()),
+        return MiembroLedger.rehydrate(
+            ClienteId.of(entity.getClienteId()),
+            rol,
             LedgerId.of(entity.getLedgerId()),
-                rol
+            entity.isActivo()
         );
     }
     private MiembroLedgerEntity toEntity(MiembroLedger miembro) {
-        MiembroLedgerId id = new MiembroLedgerId(miembro.getClienteId().value(), miembro.getLedgerId().value());
+        MiembroLedgerId id = MiembroLedgerId.of(miembro.getLedgerId().value(), miembro.getClienteId().value());
         return new MiembroLedgerEntity(
             id,
             miembro.getRol(),

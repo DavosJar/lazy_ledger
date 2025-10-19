@@ -237,4 +237,58 @@ public class MiembroLedgerController {
         ApiResponse<Void> response = miembroLedgerFacade.eliminarLedger(solicitanteUuid, ledgerUuid);
         return ResponseEntity.ok(response);
     }
+
+        // === ENDPOINTS DEMO PARA INVITACIONES ===
+
+        @GetMapping("/demo/invitar")
+        @Operation(summary = "[DEMO] Invitar miembro con parámetros por URL")
+        public ResponseEntity<ApiResponse<MiembroLedgerDTO>> invitarMiembroDemo(
+                @RequestParam String solicitanteId,
+                @RequestParam String clienteId,
+                @RequestParam String ledgerId) {
+        
+            UUID solicitanteUuid = UUID.fromString(solicitanteId.trim());
+            UUID clienteUuid = UUID.fromString(clienteId.trim());
+            UUID ledgerUuid = UUID.fromString(ledgerId.trim());
+        
+            ApiResponse<MiembroLedgerDTO> response = miembroLedgerFacade.invitarMiembro(solicitanteUuid, clienteUuid, ledgerUuid);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        }
+
+        @GetMapping("/demo/aceptar")
+        @Operation(summary = "[DEMO] Aceptar invitación con parámetros por URL")
+        public ResponseEntity<ApiResponse<MiembroLedgerDTO>> aceptarInvitacionDemo(
+                @RequestParam String clienteId,
+                @RequestParam String ledgerId) {
+        
+            UUID clienteUuid = UUID.fromString(clienteId.trim());
+            UUID ledgerUuid = UUID.fromString(ledgerId.trim());
+        
+            ApiResponse<MiembroLedgerDTO> response = miembroLedgerFacade.aceptarInvitacion(clienteUuid, ledgerUuid);
+            return ResponseEntity.ok(response);
+        }
+
+        @GetMapping("/demo/rechazar")
+        @Operation(summary = "[DEMO] Rechazar invitación con parámetros por URL")
+        public ResponseEntity<ApiResponse<Void>> rechazarInvitacionDemo(
+                @RequestParam String clienteId,
+                @RequestParam String ledgerId) {
+        
+            UUID clienteUuid = UUID.fromString(clienteId.trim());
+            UUID ledgerUuid = UUID.fromString(ledgerId.trim());
+        
+            ApiResponse<Void> response = miembroLedgerFacade.rechazarInvitacion(clienteUuid, ledgerUuid);
+            return ResponseEntity.ok(response);
+        }
+
+        @GetMapping("/demo/pendientes")
+        @Operation(summary = "[DEMO] Listar invitaciones pendientes con parámetros por URL")
+        public ResponseEntity<ApiResponse<java.util.List<MiembroLedgerDTO>>> listarInvitacionesPendientesDemo(
+                @RequestParam String clienteId) {
+        
+            UUID clienteUuid = UUID.fromString(clienteId.trim());
+        
+            ApiResponse<java.util.List<MiembroLedgerDTO>> response = miembroLedgerFacade.listarInvitacionesPendientes(clienteUuid);
+            return ResponseEntity.ok(response);
+        }
 }

@@ -21,6 +21,9 @@ public class MiembroLedgerFacade {
 
     private final MiembroLedgerRepository miembroLedgerRepository;
     private final InvitarMiembroUseCase invitarMiembroUseCase;
+        private final AceptarInvitacionUseCase aceptarInvitacionUseCase;
+        private final RechazarInvitacionUseCase rechazarInvitacionUseCase;
+        private final ListarInvitacionesPendientesUseCase listarInvitacionesPendientesUseCase;
     private final CambiarRolMiembroUseCase cambiarRolMiembroUseCase;
     private final ExpulsarMiembroUseCase expulsarMiembroUseCase;
     private final EliminarLedgerUseCase eliminarLedgerUseCase;
@@ -30,6 +33,9 @@ public class MiembroLedgerFacade {
 
     public MiembroLedgerFacade(MiembroLedgerRepository miembroLedgerRepository,
                                InvitarMiembroUseCase invitarMiembroUseCase,
+                                   AceptarInvitacionUseCase aceptarInvitacionUseCase,
+                                   RechazarInvitacionUseCase rechazarInvitacionUseCase,
+                                   ListarInvitacionesPendientesUseCase listarInvitacionesPendientesUseCase,
                                CambiarRolMiembroUseCase cambiarRolMiembroUseCase,
                                ExpulsarMiembroUseCase expulsarMiembroUseCase,
                                EliminarLedgerUseCase eliminarLedgerUseCase,
@@ -38,6 +44,9 @@ public class MiembroLedgerFacade {
                                MiembroLedgerHateoasLinkBuilder hateoasLinkBuilder) {
         this.miembroLedgerRepository = miembroLedgerRepository;
         this.invitarMiembroUseCase = invitarMiembroUseCase;
+            this.aceptarInvitacionUseCase = aceptarInvitacionUseCase;
+            this.rechazarInvitacionUseCase = rechazarInvitacionUseCase;
+            this.listarInvitacionesPendientesUseCase = listarInvitacionesPendientesUseCase;
         this.cambiarRolMiembroUseCase = cambiarRolMiembroUseCase;
         this.expulsarMiembroUseCase = expulsarMiembroUseCase;
         this.eliminarLedgerUseCase = eliminarLedgerUseCase;
@@ -141,4 +150,34 @@ public class MiembroLedgerFacade {
             .map(MiembroLedger::isActivo)
             .orElse(false);
     }
+
+        // === GESTIÓN DE INVITACIONES ===
+
+        /**
+         * Acepta una invitación pendiente.
+         */
+        public ApiResponse<MiembroLedgerDTO> aceptarInvitacion(UUID clienteId, UUID ledgerId) {
+            MiembroLedger miembro = aceptarInvitacionUseCase.ejecutar(clienteId, ledgerId);
+            MiembroLedgerDTO dto = mapper.toDTO(miembro);
+            return responseFactory.createResponse(dto);
+        }
+
+        /**
+         * Rechaza una invitación pendiente.
+         */
+        public ApiResponse<Void> rechazarInvitacion(UUID clienteId, UUID ledgerId) {
+            rechazarInvitacionUseCase.ejecutar(clienteId, ledgerId);
+            return responseFactory.createResponse(null);
+        }
+
+        /**
+         * Lista las invitaciones pendientes de un cliente.
+         */
+        public ApiResponse<List<MiembroLedgerDTO>> listarInvitacionesPendientes(UUID clienteId) {
+            List<MiembroLedger> invitaciones = listarInvitacionesPendientesUseCase.ejecutar(clienteId);
+            List<MiembroLedgerDTO> dtos = invitaciones.stream()
+                .map(mapper::toDTO)
+                .collect(Collectors.toList());
+            return responseFactory.createResponse(dtos);
+        }
 }

@@ -31,13 +31,13 @@ public class TransaccionAssembler implements BaseAssembler<TransaccionDTO> {
         addCommonLinks(response);
         return response;
     }
-
+    /* 
     @Override
     public void addCommonLinks(ApiResponse<TransaccionDTO> response) {
         // Agregar enlaces comunes si es necesario, por ejemplo, enlace a lista de transacciones
         Link allTransaccionesLink = linkTo(methodOn(TransaccionController.class).getAllTransacciones(0, 10)).withRel("all-transacciones");
         response.add(allTransaccionesLink);
-    }
+    }*/
 
     // Método para convertir TransaccionSaveRequest a Transaccion (dominio)
     public Transaccion toDomain(TransaccionSaveRequest request) {

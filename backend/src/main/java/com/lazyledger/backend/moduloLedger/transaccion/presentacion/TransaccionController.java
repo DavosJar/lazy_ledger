@@ -1,7 +1,6 @@
 package com.lazyledger.backend.moduloLedger.transaccion.presentacion;
 
 import com.lazyledger.backend.api.ApiResponse;
-import com.lazyledger.backend.api.PagedResponse;
 import com.lazyledger.backend.moduloLedger.transaccion.aplicacion.TransaccionFacade;
 import com.lazyledger.backend.moduloLedger.transaccion.presentacion.dto.TransaccionDTO;
 import com.lazyledger.backend.moduloLedger.transaccion.presentacion.dto.TransaccionSaveRequest;
@@ -19,13 +18,6 @@ public class TransaccionController {
         this.transaccionFacade = transaccionFacade;
     }
 
-    @GetMapping
-    public ResponseEntity<PagedResponse<TransaccionDTO>> getAllTransacciones(
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PagedResponse<TransaccionDTO> response = transaccionFacade.getAllTransacciones(page, size);
-        return ResponseEntity.ok(response);
-    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ApiResponse<TransaccionDTO>> getTransaccionById(@PathVariable String id) {
@@ -52,12 +44,30 @@ public class TransaccionController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/ledger/{ledgerId}")
-    public ResponseEntity<PagedResponse<TransaccionDTO>> getTransaccionesByLedgerId(
-            @PathVariable String ledgerId,
-            @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
-        PagedResponse<TransaccionDTO> response = transaccionFacade.getTransaccionesByLedgerId(ledgerId, page, size);
-        return ResponseEntity.ok(response);
+    /**
+     * Endpoint de prueba para crear una transacción con parámetros mínimos por URL.
+     * Uso: GET /transacciones/demo?ledgerId=xxx&clienteId=yyy&monto=100&tipo=INGRESO&categoria=ALIMENTACION&descripcion=Test
+     */
+    @GetMapping("/demo")
+    public ResponseEntity<ApiResponse<TransaccionDTO>> crearTransaccionDemo(
+            @RequestParam String ledgerId,
+            @RequestParam String clienteId,
+            @RequestParam double monto,
+            @RequestParam String tipo,
+            @RequestParam String categoria,
+            @RequestParam(defaultValue = "Transacción de prueba") String descripcion) {
+        
+        TransaccionSaveRequest request = new TransaccionSaveRequest();
+        request.setLedgerId(ledgerId);
+        request.setClienteId(clienteId);
+        request.setMonto(monto);
+        request.setTipo(tipo);
+        request.setCategoria(categoria);
+        request.setDescripcion(descripcion);
+        // fecha = null para usar fecha actual
+        
+        var apiResponse = transaccionFacade.createTransaccion(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(apiResponse);
     }
+
 }
