@@ -85,9 +85,9 @@ public class ClienteFacade {
                 .collect(java.util.stream.Collectors.toList());
         long totalElements = allClientes.size();
         int totalPages = (int) Math.ceil((double) totalElements / size);
-        int start = page * size;
-        int end = Math.min(start + size, allClientes.size());
-        var pageClientes = allClientes.subList(start, end);
+    int start = Math.max(0, Math.min(page * size, allClientes.size()));
+    int end = Math.max(start, Math.min(start + size, allClientes.size()));
+    var pageClientes = allClientes.subList(start, end);
 
         PagedResponse.PaginationInfo pagination = new PagedResponse.PaginationInfo(
             page, size, totalElements, totalPages, page == 0, page >= totalPages - 1

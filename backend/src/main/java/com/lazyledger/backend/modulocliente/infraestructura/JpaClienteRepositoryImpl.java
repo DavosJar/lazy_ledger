@@ -62,7 +62,10 @@ public class JpaClienteRepositoryImpl implements ClienteRepository {
     @Override
     public List<Cliente> findAll() {
         try {
-            return jpaRepository.findAll().stream().map(this::toDomain).toList();
+            logger.info("[CLIENTES][REPO] Ejecutando findAll en JPA");
+            List<Cliente> list = jpaRepository.findAll().stream().map(this::toDomain).toList();
+            logger.info("[CLIENTES][REPO] JPA retornó {} registros", list != null ? list.size() : 0);
+            return list;
         } catch (Exception e) {
             throw new InfrastructureException("Error al obtener todos los clientes de la base de datos", e);
         }

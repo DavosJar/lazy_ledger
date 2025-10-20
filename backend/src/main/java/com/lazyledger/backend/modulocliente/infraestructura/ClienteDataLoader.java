@@ -4,7 +4,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.lazyledger.backend.modulocliente.aplicacion.ClienteFacade;
-import com.lazyledger.backend.modulocliente.dominio.Cliente;
 import com.lazyledger.backend.modulocliente.presentacion.dto.ClienteSaveRequest;
 
 /**
@@ -39,6 +38,6 @@ public class ClienteDataLoader implements CommandLineRunner {
             clienteFacade.createCliente(request);
         }
 
-        System.out.println("Cargados 15 clientes de ejemplo.");
+    // ...existing code...
     }
 }

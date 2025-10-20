@@ -2,6 +2,7 @@ package com.lazyledger.backend.moduloLedger.ledger.presentacion;
 
 import com.lazyledger.backend.api.ApiResponse;
 import com.lazyledger.backend.api.PagedResponse;
+import com.lazyledger.backend.commons.UserContextService;
 import com.lazyledger.backend.moduloLedger.ledger.aplicacion.LedgerFacade;
 import com.lazyledger.backend.moduloLedger.ledger.presentacion.dto.LedgerDTO;
 import com.lazyledger.backend.moduloLedger.ledger.presentacion.dto.LedgerSaveRequest;
@@ -16,13 +17,18 @@ import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Set;
 
 /**
  * Controller REST para gestión de Ledgers.
  * 
  * Los endpoints de este controller requieren autenticación JWT.
- * El clienteId se obtiene del token JWT del usuario autenticado.
+ * El clienteId se obtiene del token JWT del usuario autenticado mediante UserContextService.
  */
 @RestController
 @RequestMapping("/ledgers")
@@ -30,10 +36,22 @@ import org.springframework.web.bind.annotation.*;
 @SecurityRequirement(name = "Bearer Authentication")
 public class LedgerController {
 
-    private final LedgerFacade ledgerFacade;
+    // Lista blanca de campos permitidos para ordenamiento
+    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+        "nombre", "descripcion", "estado"
+    );
 
-    public LedgerController(LedgerFacade ledgerFacade) {
+    // Lista blanca de direcciones de ordenamiento
+    private static final Set<String> ALLOWED_SORT_DIRECTIONS = Set.of(
+        "asc", "desc"
+    );
+
+    private final LedgerFacade ledgerFacade;
+    private final UserContextService userContextService;
+
+    public LedgerController(LedgerFacade ledgerFacade, UserContextService userContextService) {
         this.ledgerFacade = ledgerFacade;
+        this.userContextService = userContextService;
     }
 
     @PostMapping
@@ -74,35 +92,104 @@ public class LedgerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    // Endpoint temporal de testing: crea un ledger quemado sin seguridad
-    // GET /ledgers/debug/crear
-        // Endpoint de prueba rápida: crea ledger demo y propietario fijo
-    @GetMapping("/debug/crear-simple")
-    @Operation(summary = "[DEBUG] Crear ledger demo sin parámetros",
-               description = "Crea un ledger demo y asigna propietario con datos fijos. Solo para pruebas rápidas.")
-    public ResponseEntity<ApiResponse<LedgerDTO>> crearLedgerDemoSimple(@RequestParam String clienteId) {
-        // Datos fijos para pruebas
-        String nombre = "Ledger Demo Simple";
-        String descripcion = "Ledger creado por GET simple de prueba";
-        var request = new com.lazyledger.backend.moduloLedger.ledger.presentacion.dto.LedgerSaveRequest(
-            nombre,
-            descripcion
-        );
-        ApiResponse<LedgerDTO> response = ledgerFacade.crearLedger(request, clienteId);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
     @GetMapping
     @Operation(summary = "Listar ledgers de un cliente",
-               description = "Devuelve todos los ledgers donde el cliente es miembro. Se usa clienteId como query param para pruebas. Soporta paginación, ordenamiento y filtro por nombre.")
+               description = "Devuelve todos los ledgers donde el cliente es miembro. Requiere token JWT para autenticación. Soporta paginación, ordenamiento y filtro por nombre.")
     public ResponseEntity<PagedResponse<LedgerDTO>> listarLedgersDeCliente(
-            @RequestParam String clienteId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(value = "nombre", required = false) String nombre,
             @RequestParam(value = "sortBy", defaultValue = "nombre") String sortBy,
             @RequestParam(value = "dir", defaultValue = "asc") String dir) {
-        boolean asc = !"desc".equalsIgnoreCase(dir);
-        PagedResponse<LedgerDTO> response = ledgerFacade.listarLedgersDeCliente(clienteId, nombre, page, size, sortBy, asc);
+
+        // Obtener clienteId del token JWT (SecurityContext)
+        String clienteId = obtenerClienteIdDesdeToken();
+
+        // Validar y sanitizar parámetros para prevenir inyección
+        String sanitizedSortBy = validateSortField(sortBy);
+        String sanitizedDir = validateSortDirection(dir);
+        String sanitizedNombre = sanitizeSearchTerm(nombre);
+
+        boolean asc = "asc".equalsIgnoreCase(sanitizedDir);
+        PagedResponse<LedgerDTO> response = ledgerFacade.listarLedgersDeCliente(clienteId, sanitizedNombre, page, size, sanitizedSortBy, asc);
         return ResponseEntity.ok(response);
+    }
+
+    /**
+     * Valida que el campo de ordenamiento esté en la lista blanca
+     */
+    private String validateSortField(String sortBy) {
+        if (sortBy == null || sortBy.trim().isEmpty()) {
+            return "nombre"; // valor por defecto
+        }
+
+        String normalizedField = sortBy.trim().toLowerCase();
+        if (!ALLOWED_SORT_FIELDS.contains(normalizedField)) {
+            throw new IllegalArgumentException("Campo de ordenamiento no permitido: " + sortBy);
+        }
+
+        return normalizedField;
+    }
+
+    /**
+     * Valida que la dirección de ordenamiento sea válida
+     */
+    private String validateSortDirection(String dir) {
+        if (dir == null || dir.trim().isEmpty()) {
+            return "asc"; // valor por defecto
+        }
+
+        String normalizedDir = dir.trim().toLowerCase();
+        if (!ALLOWED_SORT_DIRECTIONS.contains(normalizedDir)) {
+            throw new IllegalArgumentException("Dirección de ordenamiento no permitida: " + dir);
+        }
+
+        return normalizedDir;
+    }
+
+    /**
+     * Sanitiza términos de búsqueda para prevenir inyección
+     */
+    private String sanitizeSearchTerm(String term) {
+        if (term == null || term.trim().isEmpty()) {
+            return null;
+        }
+
+        String sanitized = term.trim();
+
+        // Limitar longitud máxima
+        if (sanitized.length() > 100) {
+            throw new IllegalArgumentException("Término de búsqueda demasiado largo");
+        }
+
+        // Remover caracteres potencialmente peligrosos
+        sanitized = sanitized.replaceAll("[<>\"'%;()&+]", "");
+
+        // Validar que no contenga palabras clave SQL
+        String lowerSanitized = sanitized.toLowerCase();
+        if (lowerSanitized.contains("select") || lowerSanitized.contains("union") ||
+            lowerSanitized.contains("drop") || lowerSanitized.contains("delete") ||
+            lowerSanitized.contains("update") || lowerSanitized.contains("insert")) {
+            throw new IllegalArgumentException("Término de búsqueda contiene caracteres no permitidos");
+        }
+
+        return sanitized;
+    }
+
+    /**
+     * Obtiene el clienteId del usuario autenticado desde el SecurityContext.
+     * Usa UserContextService para mapear userId (username del JWT) a clienteId.
+     */
+    private String obtenerClienteIdDesdeToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            throw new IllegalStateException("Usuario no autenticado");
+        }
+
+        // Obtener userId (username) del JWT
+        String userId = authentication.getName();
+        
+        // Mapear userId a clienteId usando el servicio de contexto
+        return userContextService.getClienteIdFromUserId(userId);
     }
 }

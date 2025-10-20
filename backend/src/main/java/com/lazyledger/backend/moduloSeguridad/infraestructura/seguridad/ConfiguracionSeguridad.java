@@ -3,7 +3,6 @@ package com.lazyledger.backend.moduloSeguridad.infraestructura.seguridad;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,9 +27,6 @@ import com.lazyledger.backend.moduloSeguridad.infraestructura.jwt.PuntoEntradaAu
 @EnableWebSecurity
 @EnableMethodSecurity
 public class ConfiguracionSeguridad {
-
-    @Value("${app.seguridad.habilitada:false}")
-    private boolean seguridadHabilitada;
 
     private final PuntoEntradaAutenticacionJwt puntoEntradaAutenticacionJwt;
     private final FiltroAutenticacionJwt filtroAutenticacionJwt;
@@ -69,15 +65,7 @@ public class ConfiguracionSeguridad {
     public SecurityFilterChain cadenaFiltroSeguridad(HttpSecurity http) throws Exception {
         http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 
-        if (!seguridadHabilitada) {
-            // Si la seguridad está deshabilitada, permitir todas las solicitudes
-            http.csrf(AbstractHttpConfigurer::disable)
-                    .authorizeHttpRequests(authz -> authz
-                            .anyRequest().permitAll());
-            return http.build();
-        }
-
-        // Configuración de seguridad cuando está habilitada
+        // Configuración de seguridad SIEMPRE activa
         if (puntoEntradaAutenticacionJwt != null && filtroAutenticacionJwt != null) {
             http.csrf(AbstractHttpConfigurer::disable)
                     .exceptionHandling(exception -> exception
@@ -91,10 +79,11 @@ public class ConfiguracionSeguridad {
 
             http.addFilterBefore(filtroAutenticacionJwt, UsernamePasswordAuthenticationFilter.class);
         } else {
-            // Fallback si los beans JWT no están disponibles
+            // Fallback si los beans JWT no están disponibles - aún así requerir autenticación básica
             http.csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(authz -> authz
-                            .anyRequest().permitAll());
+                            .requestMatchers("/api/auth/**").permitAll()
+                            .anyRequest().authenticated());
         }
 
         return http.build();

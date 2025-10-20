@@ -46,17 +46,6 @@
 
 ### 3.1. Cliente
 
-**ClienteSaveRequest** (creación):
-```json
-{
-  "nombre": "Juan",
-  "apellido": "Pérez",
-  "email": "juan.perez@example.com",
-  "tipo": "PERSONA",
-  "telefono": "+593987654321"
-}
-```
-
 **ClienteDTO** (respuesta):
 ```json
 {

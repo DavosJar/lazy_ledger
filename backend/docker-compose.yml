@@ -4,8 +4,8 @@ services:
     container_name: lazy_ledger_postgres
     environment:
       POSTGRES_DB: lazy_ledger_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     ports:
       - "5432:5432"
     volumes:
@@ -32,8 +32,9 @@ services:
         condition: service_healthy
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/lazy_ledger_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: password
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-password}
+      JWT_SECRET: ${JWT_SECRET:-DuqmFuAE9rkpu5Ot4NCULGjIjZ50kC//pX5xVuIeZBWiyT5H3YM6P/bXuA9y8lJV+ikmTEe+TZrJMa92u+ArOw==}
     networks:
       - lazy_ledger_network
 

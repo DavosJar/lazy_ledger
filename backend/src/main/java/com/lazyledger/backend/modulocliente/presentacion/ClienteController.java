@@ -8,6 +8,7 @@ import com.lazyledger.backend.modulocliente.presentacion.dto.ClienteSaveRequest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @RestController
 @RequestMapping("/clientes")
 @Tag(name = "Clientes", description = "API para gestión de clientes")
+@PreAuthorize("hasRole('USER')")
 public class ClienteController {
 
     private final ClienteFacade clienteFacade;

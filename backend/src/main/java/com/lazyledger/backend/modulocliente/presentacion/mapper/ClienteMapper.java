@@ -22,9 +22,10 @@ public class ClienteMapper {
     public ClienteDTO toDTO(Cliente cliente) {
         ClienteDTO dto = new ClienteDTO();
         dto.setId(cliente.getId().toString());
-        dto.setNombre(cliente.getNombreCompleto().getNombre());
-        dto.setApellido(cliente.getNombreCompleto().getApellido());
-        dto.setEmail(cliente.getEmail().toString());
+        var nombreCompleto = cliente.getNombreCompleto();
+        dto.setNombre(nombreCompleto != null ? nombreCompleto.getNombre() : null);
+        dto.setApellido(nombreCompleto != null ? nombreCompleto.getApellido() : null);
+        dto.setEmail(cliente.getEmail() != null ? cliente.getEmail().toString() : null);
         dto.setTipo(cliente.getTipo() != null ? cliente.getTipo().name() : null);
         dto.setTelefono(cliente.getTelefono() != null ? cliente.getTelefono().toString() : null);
         return dto;
