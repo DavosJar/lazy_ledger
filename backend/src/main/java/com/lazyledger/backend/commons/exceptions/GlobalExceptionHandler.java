@@ -5,6 +5,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import com.lazyledger.backend.moduloSeguridad.api.exceptions.UnauthorizedAccessException;
+import com.lazyledger.backend.moduloSeguridad.api.exceptions.InvalidTokenException;
+import com.lazyledger.backend.moduloSeguridad.api.exceptions.SecurityException;
+import com.lazyledger.backend.moduloSeguridad.api.exceptions.AutenticacionException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -76,13 +80,30 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(com.lazyledger.backend.moduloSeguridad.api.exceptions.AutenticacionException.class)
-    public ResponseEntity<Object> handleAutenticacionException(com.lazyledger.backend.moduloSeguridad.api.exceptions.AutenticacionException ex, WebRequest request) {
+    @ExceptionHandler(AutenticacionException.class)
+    public ResponseEntity<Object> handleAutenticacionException(AutenticacionException ex, WebRequest request) {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
         body.put("type", "AUTHENTICATION_ERROR");
         return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<Object> handleSecurityException(SecurityException ex, WebRequest request) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("message", ex.getMessage());
+        body.put("type", "SECURITY_ERROR");
+
+        HttpStatus status = HttpStatus.FORBIDDEN;
+        if (ex instanceof UnauthorizedAccessException) {
+            status = HttpStatus.UNAUTHORIZED;
+        } else if (ex instanceof InvalidTokenException) {
+            status = HttpStatus.UNAUTHORIZED;
+        }
+
+        return new ResponseEntity<>(body, status);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
@@ -102,4 +123,5 @@ public class GlobalExceptionHandler {
         body.put("type", "INTERNAL_ERROR");
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+    
 }

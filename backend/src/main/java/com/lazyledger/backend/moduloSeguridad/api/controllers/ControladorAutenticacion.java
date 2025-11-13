@@ -4,6 +4,8 @@ import com.lazyledger.backend.moduloSeguridad.api.dto.RespuestaJwt;
 import com.lazyledger.backend.moduloSeguridad.api.dto.SolicitudLogin;
 import com.lazyledger.backend.moduloSeguridad.api.dto.SolicitudRegistro;
 import com.lazyledger.backend.moduloSeguridad.api.dto.RespuestaRegistro;
+import com.lazyledger.backend.moduloSeguridad.api.exceptions.UnauthorizedAccessException;
+import com.lazyledger.backend.moduloSeguridad.api.exceptions.UserAlreadyExistsException;
 import com.lazyledger.backend.moduloSeguridad.domain.servicios.ServicioAutenticacion;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,8 +46,7 @@ public class ControladorAutenticacion {
         int userFails = failedAttemptsUser.getOrDefault(username, 0);
         int ipFails = failedAttemptsIp.getOrDefault(ip, 0);
         if (userFails >= 5 || ipFails >= 5) {
-            log.warn("LOGIN BLOCKED | user: {} | ip: {} | agent: {} | time: {} | userFails: {} | ipFails: {}", username, ip, userAgent, LocalDateTime.now(), userFails, ipFails);
-            return ResponseEntity.status(429).body("Demasiados intentos fallidos. Bloqueado por seguridad.");
+            throw new UnauthorizedAccessException("Demasiados intentos fallidos. Bloqueado por seguridad.");
         }
         try {
             RespuestaJwt respuestaJwt = servicioAutenticacion.autenticarUsuario(solicitudLogin);
@@ -55,11 +56,10 @@ public class ControladorAutenticacion {
         } catch (Exception e) {
             int countUser = failedAttemptsUser.merge(username, 1, Integer::sum);
             int countIp = failedAttemptsIp.merge(ip, 1, Integer::sum);
-            log.warn("LOGIN FAIL | user: {} | ip: {} | agent: {} | time: {} | userFails: {} | ipFails: {}", username, ip, userAgent, LocalDateTime.now(), countUser, countIp);
             // Guardar en base de datos
             LoginFailAudit audit = new LoginFailAudit(username, ip, userAgent, LocalDateTime.now(), Math.max(countUser, countIp));
             loginFailAuditRepository.save(audit);
-            return ResponseEntity.status(401).body("Login FAIL. Intentos fallidos usuario: " + countUser + ", IP: " + countIp);
+            throw new UnauthorizedAccessException("Credenciales inválidas. Intentos fallidos usuario: " + countUser + ", IP: " + countIp);
         }
     }
 
@@ -74,8 +74,12 @@ public class ControladorAutenticacion {
     @PostMapping("/signup")
     @Operation(summary = "Registrar nuevo usuario", description = "Registrar un nuevo usuario con email, nombre de usuario y contraseña")
     public ResponseEntity<RespuestaRegistro> registrarUsuario(@Valid @RequestBody SolicitudRegistro solicitudRegistro) {
-        servicioAutenticacion.registrarUsuario(solicitudRegistro);
-        RespuestaRegistro respuesta = RespuestaRegistro.exito(solicitudRegistro.nombreUsuario());
-        return ResponseEntity.ok(respuesta);
+        try {
+            servicioAutenticacion.registrarUsuario(solicitudRegistro);
+            RespuestaRegistro respuesta = RespuestaRegistro.exito(solicitudRegistro.nombreUsuario());
+            return ResponseEntity.ok(respuesta);
+        } catch (UserAlreadyExistsException e) {
+            throw e;
+        }
     }
 }
