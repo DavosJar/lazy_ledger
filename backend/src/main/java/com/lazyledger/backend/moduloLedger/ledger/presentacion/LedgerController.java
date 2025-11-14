@@ -37,12 +37,12 @@ import java.util.Set;
 public class LedgerController {
 
     // Lista blanca de campos permitidos para ordenamiento
-    private static final Set<String> ALLOWED_SORT_FIELDS = Set.of(
+    private static final Set<String> CAMPOS_ORDENAMIENTO_PERMITIDOS = Set.of(
         "nombre", "descripcion", "estado"
     );
 
     // Lista blanca de direcciones de ordenamiento
-    private static final Set<String> ALLOWED_SORT_DIRECTIONS = Set.of(
+    private static final Set<String> DIRECCIONES_ORDENAMIENTO_PERMITIDAS = Set.of(
         "asc", "desc"
     );
 
@@ -124,7 +124,7 @@ public class LedgerController {
         }
 
         String normalizedField = sortBy.trim().toLowerCase();
-        if (!ALLOWED_SORT_FIELDS.contains(normalizedField)) {
+        if (!CAMPOS_ORDENAMIENTO_PERMITIDOS.contains(normalizedField)) {
             throw new IllegalArgumentException("Campo de ordenamiento no permitido: " + sortBy);
         }
 
@@ -140,7 +140,7 @@ public class LedgerController {
         }
 
         String normalizedDir = dir.trim().toLowerCase();
-        if (!ALLOWED_SORT_DIRECTIONS.contains(normalizedDir)) {
+        if (!DIRECCIONES_ORDENAMIENTO_PERMITIDAS.contains(normalizedDir)) {
             throw new IllegalArgumentException("Dirección de ordenamiento no permitida: " + dir);
         }
 
@@ -188,7 +188,7 @@ public class LedgerController {
 
         // Obtener userId (username) del JWT
         String userId = authentication.getName();
-        
+
         // Mapear userId a clienteId usando el servicio de contexto
         return userContextService.getClienteIdFromUserId(userId);
     }

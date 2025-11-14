@@ -9,6 +9,6 @@ public class LazyLedgerController {
 
     @GetMapping("/")
     public ResponseEntity<String> healthCheck() {
-        return ResponseEntity.ok("LazyLedger is running!");
+        return ResponseEntity.ok("LazyLedger está funcionando!");
     }
 }

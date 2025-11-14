@@ -1,120 +1,23 @@
 # lazy_ledger
 
-
 # Requerimientos del Proyecto
 
-Para la recopilación detallada de requisitos para el desarrollo de la aplicacion, consulte [requirements.md](requirements.md).
+Para la recopilación detallada de requisitos para el desarrollo de la aplicación, consulte [requirements.md](requirements.md).
 
 # Arquitectura seleccionada.
 
-Basándonos en los requisitos funcionales y no funcionales, y utilizando Spring Boot para el desarrollo del backend, hemos optado por una Arquitectura de Microservicios orientada a la Web con una API RESTful y una interfaz de Bot de Telegram. Esta elección nos permite alcanzar altos niveles de escalabilidad, modularidad y resiliencia.
+Basándonos en los requisitos funcionales y no funcionales, y utilizando Spring Boot para el desarrollo del backend, hemos optado por una Arquitectura orientada a la Web con una API RESTful y una interfaz de Bot de Telegram. Esta elección nos permite alcanzar altos niveles de escalabilidad, modularidad y resiliencia.
+
 Componentes Principales
 La arquitectura se compone de los siguientes elementos clave:
-Backend (Microservicios con Spring Boot):
-Auth & User Service: Gestiona la autenticación, el registro de usuarios y la gestión de perfiles (RF-01, RF-02, RF-03, RF-04, RNF-01). Utiliza Spring Security para la autenticación basada en JWT.
-Ledger Service: Maneja la creación, gestión, invitación y asignación de roles dentro de los libros contables (RF-05, RF-06, RF-07, RF-08, RNF-03).
-Transaction Service (Opcional/Futuro): Encargado de procesar y registrar transacciones, incluyendo las provenientes de audio (RNF-05).
-API Gateway (Spring Cloud Gateway): Punto de entrada unificado para todas las solicitudes. Se encarga del enrutamiento, balanceo de carga, seguridad perimetral (JWT) y garantiza la comunicación a través de HTTPS (RNF-02).
+Backend (Spring Boot):
+Módulos principales: Gestiona la autenticación, registro de usuarios, gestión de perfiles, creación y gestión de libros contables, invitaciones, asignación de roles, y procesamiento de transacciones.
 Base de Datos (PostgreSQL):
-Una base de datos relacional robusta utilizada por todos los microservicios para almacenar usuarios, libros contables, transacciones, roles y otra información estructurada. Elegida por su fiabilidad y escalabilidad.
+Una base de datos relacional robusta para almacenar usuarios, libros contables, transacciones, roles y otra información estructurada. Elegida por su fiabilidad y escalabilidad.
 Bot de Telegram:
-Una interfaz conversacional que permite a los usuarios interactuar con el sistema Lazy Ledger. Proporciona menús y mensajes claros (RNF-06, RNF-07) y se comunica con el backend a través del API Gateway.
+Una interfaz conversacional que permite a los usuarios interactuar con el sistema Lazy Ledger. Proporciona menús y mensajes claros.
 ASR & NLP Service (Reconocimiento de Voz y PNL):
-Un servicio (interno o externo) dedicado a transformar grabaciones de audio en texto y extraer información relevante para la creación de transacciones contables (RNF-05). Este servicio se integra con el Transaction Service.
-
-
-# Estándares de codiﬁcación adoptados.
-
-1. Documentación con Javadoc
-Utilizamos el estándar Javadoc para la documentación de código, lo que permite generar automáticamente la documentación API del proyecto.
-Generación de Documentación: Para generar las páginas web Javadoc, se puede usar un IDE como jGRASP (File -> Generate Documentation) o el comando javadoc desde la línea de comandos de Maven (ver más abajo).
-Errores Javadoc: Los errores de Javadoc se mostrarán en la ventana de compilación o en la consola.
-
-
-2. Reglas Básicas de Codificación
-Nombres Descriptivos: Utilizar nombres descriptivos y apropiados para todos los identificadores (variables, métodos, clases, constantes, etc.).
-Comentarios Regulares: Se recomienda comentar cada 3-7 líneas de código para explicar lógica compleja.
-Claridad y Orden: Mantener el código ordenado y bien estructurado.
-
-3. Nomenclatura y Capitalización de Identificadores
-Descriptivos: Siempre usar nombres descriptivos.
-Identificadores de Una Letra: Solo permitidos para contadores en bucles (ej. i, j).
-Nombres de Clase: Inician con mayúscula (PascalCase). Ej: UserService, LedgerController.
-Nombres de Variables: Inician con minúscula (camelCase). Esto incluye parámetros, variables locales y campos de datos.
-Excepción: Las constantes (variables final) usan mayúsculas y guiones bajos (UPPER_SNAKE_CASE). Ej: MAX_RETRIES.
-Nombres de Métodos: Inician con minúscula (camelCase). Ej: createUser, getLedgerById.
-Identificadores Multi-Palabra: Se capitalizan internamente (camelCase/PascalCase) sin usar guiones medios ni guiones bajos (excepto para constantes).
-Ejemplo: float sumOfSquares = 0;
-Constante: final int DAYS_IN_YEAR = 365;
-
-4. Comentarios: Clases
-Toda clase debe ir precedida de un comentario descriptivo utilizando la convención Javadoc. El comentario debe describir el propósito de la clase.
-/**
- * Stores the first, middle, and last names for a president. 
- */
-class President {
-   //code...
-}
-
-5. Comentarios: Métodos
-Cada definición de método debe ir precedida de un comentario descriptivo utilizando la convención Javadoc. Este debe incluir:
-Descripción del Método: Breve explicación de lo que hace el método.
-@param: Nombre y descripción de cada parámetro (omitir si no hay parámetros).
-@return: Descripción del valor de retorno (omitir si el valor de retorno es void).
-@exception: Clase y descripción de cualquier excepción checked que pueda ser lanzada por el método (omitir si no hay excepciones lanzadas, es decir, si se capturan dentro del método).
-/**
- * Prints a word, prints a number, and returns integer 1
- *
- * @param word any string of Class String
- * @param number an integer of any value
- * @return the integer 1 
- * @exception MyException if the word starts with the letter 'z'
- * @exception YourException if the number is a zero(0)
- */ 
-public static int method1(String word, Integer number) throws MyException, YourException{
-  //code...
-  if(word.charAt(0) == 'z'){
-    throw new MyException();
-  }
-  if(number == 0){
-    throw new YourException();
-  }
-  try{
-    int x = 5 / 0;
-  }
-  catch(ArithmeticException exception){
-    System.out.println("ERROR: Division by zero! " + exception); 
-  }
-  
-  return 1; 
-}
-
-6. Comentarios: Variables Públicas
-Toda variable pública debe ir precedida de un comentario descriptivo utilizando la convención Javadoc, explicando su propósito.
-/** Toggles between frame and no frame mode. */
-public boolean frameMode = true;
-7. Comentarios: En Línea
-Los comentarios en línea (//) deben usarse para explicar secciones de código complicadas, como bucles o algoritmos específicos. No deben usarse para comentar características obvias del lenguaje Java.
-// Do a 3D transmogrification on the matrix.
-for (int i = 0; i < matrix.length; i++) {
-  for (int j = 0; j < matrix.length; j++) {
-    for (int k = 0; k < matrix.length; k++) {
-      values.transmogrify(matrix[i],matrix[j],matrix[k]);
-    }
-  }
-}
-
-7. Espaciado: Entre Líneas
-Métodos: Usar dos líneas en blanco para separar cada método dentro de una definición de clase.
-Secciones Lógicas: Usar una línea en blanco para separar secciones lógicas de código dentro de un método.
-public static void main(String[] arg) {
-    System.out.println("Hello" + " " + "World");
-  }
-
-
-  public void foo() { // Dos líneas en blanco
-    // ...
-  }
+Un servicio dedicado a transformar grabaciones de audio en texto y extraer información relevante para la creación de transacciones contables.
 
 # Flujo de trabajo con GitFlow.
 
@@ -131,35 +34,20 @@ Este proyecto utiliza el flujo de trabajo **GitFlow** para gestionar el código 
     *   Ejemplo: `release/v1.2.0`
 *   **`hotfix/<version>`**: Se crean a partir de `main` para solucionar errores críticos en producción. Una vez resuelto el problema, se fusionan tanto en `main` como en `develop`.
     *   Ejemplo: `hotfix/v1.1.1`
-    *   
-<img width="1168" height="507" alt="image" src="https://github.com/user-attachments/assets/07f10d7f-2578-4e29-a6d7-87621caf30a3" />
 
-
-### Instrucciones Actualizadas para Docker 
+### Instrucciones Actualizadas para Docker
 
 #### Prerrequisitos
 - Asegúrate de tener Docker y Docker Compose instalados en tu sistema.
 
 #### Paso 1: Navegar al Directorio del Backend
-Abre una terminal y navega al directorio del backend:
-
-```bash
-cd backend
-```
+Abre una terminal y navega al directorio del backend.
 
 #### Paso 2: Construir las Imágenes de Docker
-Construye las imágenes necesarias:
-
-```bash
-docker-compose build
-```
+Construye las imágenes necesarias.
 
 #### Paso 3: Iniciar los Contenedores
-Ejecuta los contenedores:
-
-```bash
-docker-compose up
-```
+Ejecuta los contenedores.
 
 Esto iniciará:
 - El contenedor de PostgreSQL (`lazy_ledger_postgres`) en el puerto 5432 con la base de datos `lazy_ledger_db`.
@@ -177,31 +65,17 @@ La aplicación esperará a que PostgreSQL esté saludable antes de iniciarse.
   - Host: postgres (nombre del servicio en Docker Compose)
   - Puerto: 5432
   - Base de datos: lazy_ledger_db
-  - Usuario: postgres
-  - Contraseña: password
 - **Aplicación**:
   - Puerto: 8090
 
 #### Detener los Contenedores
-Para detener y eliminar los contenedores:
-
-```bash
-docker-compose down
-```
+Para detener y eliminar los contenedores.
 
 Esto también eliminará los volúmenes de datos de PostgreSQL.
 
-
 ## Desarrollo Local
 
-Para desarrollo local sin contenedores, actualiza `application.properties` para usar:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/lazy_ledger_db
-spring.datasource.username=postgres
-spring.datasource.password=password
-server.port=8090
-```
+Para desarrollo local sin contenedores, actualiza `application.properties` para usar configuración local.
 
 Y ejecuta PostgreSQL localmente con la base de datos `lazyledger_db`.
 
@@ -228,6 +102,30 @@ La API está documentada usando **OpenAPI 3.0** y **Swagger UI** para proporcion
   - Validaciones de permisos de propietario
   - Headers de autorización preparados
 
+### Arquitectura del Sistema (C4 Model)
+
+La arquitectura del sistema Lazy Ledger sigue el modelo C4 (Context, Containers, Components, Code) para una documentación estructurada y jerárquica:
+
+#### Nivel 1: Diagrama de Contexto
+[![Diagrama de Contexto](docs/diagramas/structurizr-DiagramaContexto.png)](docs/diagramas/structurizr-DiagramaContexto.png)
+
+Muestra el sistema Lazy Ledger en su contexto general, incluyendo usuarios (Cliente, Administrador) y sistemas externos (Plataformas de Chat, LLM).
+
+#### Nivel 2: Diagrama de Contenedores
+[![Diagrama de Contenedores](docs/diagramas/structurizr-DiagramaContenedores.png)](docs/diagramas/structurizr-DiagramaContenedores.png)
+
+Detalla los contenedores principales del sistema: Aplicación Web, Aplicación Móvil, API Backend y Base de Datos.
+
+#### Nivel 3: Diagrama de Componentes
+[![Diagrama de Componentes](docs/diagramas/structurizr-DiagramaComponentes.png)](docs/diagramas/structurizr-DiagramaComponentes.png)
+
+Profundiza en la arquitectura del Backend, mostrando los módulos de dominio (Usuario, Seguridad, Ledger), adaptadores de integración y repositorios.
+
+#### Nivel 4: Modelo de Dominio (UML)
+[![Diagrama de Dominio](docs/diagramas/DominioLedgerLimpio.png)](docs/diagramas/DominioLedgerLimpio.png)
+
+
+
 ### Documentación Técnica Detallada
 Para información técnica completa de la API, consulte el **[Mini-Dossier Técnico API RESTful](Mini-Dossier-Tecnico-API.md)** que incluye:
 - Especificaciones detalladas de todos los endpoints
@@ -240,7 +138,7 @@ Para información técnica completa de la API, consulte el **[Mini-Dossier Técn
 Para ver el registro completo de prompts utilizados con la IA durante el desarrollo, consulte **[Registro-Prompts.md](Registro-Prompts.md)**.
 
 ### Especificaciones Generales
-- **Autenticación**: Headers personalizados preparados (no implementados en MVP)
+- **Autenticación**: Headers personalizados preparados
 - **Formato**: JSON para requests y responses
 - **Códigos HTTP**: Estándar REST (200, 201, 400, 403, 404, 409, 422, 500)
 - **Paginación**: Parámetros `page` (0-based) y `size` (máx. 100) en endpoints de listado

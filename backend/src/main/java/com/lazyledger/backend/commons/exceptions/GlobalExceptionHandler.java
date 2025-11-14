@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", "Error interno del servidor");
-        body.put("type", "INFRASTRUCTURE_ERROR");
+        body.put("type", "ERROR_INFRAESTRUCTURA");
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
@@ -85,7 +85,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
-        body.put("type", "AUTHENTICATION_ERROR");
+        body.put("type", "ERROR_AUTENTICACION");
         return new ResponseEntity<>(body, HttpStatus.UNAUTHORIZED);
     }
 
@@ -94,7 +94,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", ex.getMessage());
-        body.put("type", "SECURITY_ERROR");
+        body.put("type", "ERROR_SEGURIDAD");
 
         HttpStatus status = HttpStatus.FORBIDDEN;
         if (ex instanceof UnauthorizedAccessException) {
@@ -120,7 +120,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> body = new HashMap<>();
         body.put("timestamp", LocalDateTime.now());
         body.put("message", "Error interno del servidor");
-        body.put("type", "INTERNAL_ERROR");
+        body.put("type", "ERROR_INTERNO");
         return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
     }
     
